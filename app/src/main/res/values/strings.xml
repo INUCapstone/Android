@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Capstone</string>
+    <string name="app_name">같이 Taxi</string>
     <string name="title_charge">Charge</string>
     <string name="title_matching">Matching</string>
     <string name="title_driver">Driver</string>
