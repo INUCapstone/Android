@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_charge">
+
+    <fragment
+        android:id="@+id/navigation_charge"
+        android:name="com.example.capstone.ui.charge.ChargeFragment"
+        android:label="@string/title_charge"
+        tools:layout="@layout/fragment_charge" />
+
+    <fragment
+        android:id="@+id/navigation_matching"
+        android:name="com.example.capstone.ui.matching.MatchingFragment"
+        android:label="@string/title_matching"
+        tools:layout="@layout/fragment_matching" />
+
+    <fragment
+        android:id="@+id/navigation_driver"
+        android:name="com.example.capstone.ui.driver.DriverFragment"
+        android:label="@string/title_driver"
+        tools:layout="@layout/fragment_driver" />
+</navigation>
