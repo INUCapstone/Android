@@ -1,4 +1,4 @@
-package com.example.capstone;
+package com.example.capstone.activity;
 
 import android.os.Bundle;
 
@@ -8,6 +8,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.capstone.R;
 import com.example.capstone.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
