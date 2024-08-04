@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#32CD32</color>
+    <color name="green_gradient_status_bar">#A7F6C6</color>
 </resources>

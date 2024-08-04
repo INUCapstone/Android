@@ -17,6 +17,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Button loginButton = findViewById(R.id.loginButton);
+
+        if (getWindow() != null) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.green_gradient_status_bar));
+        }
+
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
