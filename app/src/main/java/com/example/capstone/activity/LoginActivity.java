@@ -2,19 +2,18 @@ package com.example.capstone.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.capstone.R;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private LinearLayout loginForm;
-    private LinearLayout signupForm;
+    private CardView signupForm;
+    private CardView loginForm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
