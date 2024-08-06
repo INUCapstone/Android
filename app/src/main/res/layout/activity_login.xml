@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/green_gradient_background">
+    android:background="@color/green">
 
     <!-- 입력 필드와 버튼들을 포함하는 CardView -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="460dp"
         android:layout_margin="24dp"
         android:backgroundTint="@color/white"
         android:layout_centerInParent="true"
@@ -17,10 +17,12 @@
         app:cardElevation="8dp">
 
         <LinearLayout
+            android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/logoText"
@@ -35,7 +37,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/emailEditText"
+                android:id="@+id/loginEmailEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="66dp"
@@ -45,7 +47,7 @@
                 android:padding="10dp" />
 
             <EditText
-                android:id="@+id/passwordEditText"
+                android:id="@+id/loginPasswordEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -63,7 +65,7 @@
                 android:textColor="@color/green" />
 
             <android.widget.Button
-                android:id="@+id/signupButton"
+                android:id="@+id/goSignupPageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"
@@ -71,6 +73,58 @@
                 android:text="회원가입"
                 android:textColor="@color/green" />
 
+            <TextView
+                android:id="@+id/goFindUserPageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="비밀번호 찾기"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="18sp"
+                android:clickable="true"
+                android:autoLink="none"
+                android:linksClickable="true"
+                android:layout_marginBottom="1dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/signup_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/signupEmailEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email" />
+
+            <EditText
+                android:id="@+id/signupPasswordEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New Password"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/signupPasswordRepeatEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirm Password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/signupButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign Up" />
+
+            <Button
+                android:id="@+id/backToLoginPageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back to Login" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
