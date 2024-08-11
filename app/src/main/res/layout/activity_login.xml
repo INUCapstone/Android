@@ -166,10 +166,18 @@
                     android:textStyle="bold"/>
                 <EditText
                     android:id="@+id/signupEmailEdit"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="1dp"
-                    android:hint="이메일" />
+                    android:hint="이메일                      " />
+                <android.widget.Button
+                    android:id="@+id/sendAuthNumButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="인증번호 받기"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/button_background"
+                    android:textColor="@color/green"/>
 
             </LinearLayout>
 
@@ -190,10 +198,18 @@
                     android:textStyle="bold"/>
                 <EditText
                     android:id="@+id/signupAuthNumEdit"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
-                    android:hint="인증번호" />
+                    android:hint="인증번호                    " />
+                <android.widget.Button
+                    android:id="@+id/checkAuthNumButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="확인"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/button_background"
+                    android:textColor="@color/green"/>
             </LinearLayout>
 
 
