@@ -16,7 +16,7 @@
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,7 +129,7 @@
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
