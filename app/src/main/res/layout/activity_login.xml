@@ -16,7 +16,7 @@
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,14 +122,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/signup_form"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="560dp"
         android:layout_margin="24dp"
         android:backgroundTint="@color/white"
         android:layout_centerInParent="true"
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -166,50 +166,11 @@
                     android:textStyle="bold"/>
                 <EditText
                     android:id="@+id/signupEmailEdit"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="1dp"
-                    android:hint="이메일                      " />
-                <android.widget.Button
-                    android:id="@+id/sendAuthNumButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="인증번호 받기"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/button_background"
-                    android:textColor="@color/green"/>
+                    android:hint="이메일" />
 
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="4dp"
-                    android:text="인증번호 : "
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-                <EditText
-                    android:id="@+id/signupAuthNumEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:hint="인증번호                    " />
-                <android.widget.Button
-                    android:id="@+id/checkAuthNumButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="확인"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/button_background"
-                    android:textColor="@color/green"/>
             </LinearLayout>
 
 
