@@ -5,11 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.capstone.R;
+import com.example.capstone.api.RepositoryCallback;
+import com.example.capstone.api.service.MemberService;
+import com.example.capstone.dto.LoginReq;
+import com.example.capstone.dto.SignupReq;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -17,28 +22,15 @@ public class LoginActivity extends AppCompatActivity {
     private CardView loginForm;
     private EditText loginEmailEdit, loginPasswordEdit;
     private EditText signupEmailEdit, signupPasswordEdit, signupPasswordRepeatEdit, signupPhoneNumEdit, signupNicknameEdit;
+    private Button loginButton, goSignupPageButton, backToLoginButton, signupButton ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        loginForm = findViewById(R.id.login_form);
-        signupForm = findViewById(R.id.signup_form);
-
-        Button loginButton = findViewById(R.id.loginButton);
-        Button goSignupPageButton = findViewById(R.id.goSignupPageButton);
-        Button backToLoginButton = findViewById(R.id.backToLoginPageButton);
-        Button signupButton = findViewById(R.id.signupButton);
-
-        loginEmailEdit = findViewById(R.id.loginEmailEdit);
-        loginPasswordEdit = findViewById(R.id.loginPasswordEdit);
-        signupEmailEdit = findViewById(R.id.signupEmailEdit);
-        signupPasswordEdit = findViewById(R.id.signupPasswordEdit);
-        signupPasswordRepeatEdit = findViewById(R.id.signupPasswordRepeatEdit);
-        signupPhoneNumEdit = findViewById(R.id.signupPhoneNumEdit);
-        signupNicknameEdit = findViewById(R.id.signupNicknameEdit);
-
+        setup();
+        
+        // 상태바 색상 변경
         if (getWindow() != null) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.green));
         }
@@ -48,13 +40,29 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 로그인 로직을 수행
+                LoginReq loginReq = LoginReq.builder()
+                        .email(loginEmailEdit.getText().toString())
+                        .password(loginPasswordEdit.getText().toString())
+                        .build();
 
-                // MainActivity로 이동
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                MemberService memberService = new MemberService();
+                memberService.login(loginReq, new RepositoryCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        // MainActivity로 이동
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
 
-                // LoginActivity를 종료하여 뒤로 가기 시 돌아오지 않도록 함
-                finish();
+                        // LoginActivity를 종료하여 뒤로 가기 시 돌아오지 않도록 함
+                        finish();
+                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
         
@@ -83,11 +91,32 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 회원가입 로직 수행
+                SignupReq signupReq = SignupReq.builder()
+                        .email(signupEmailEdit.getText().toString())
+                        .password(signupPasswordEdit.getText().toString())
+                        .passwordRepeat(signupPasswordRepeatEdit.getText().toString())
+                        .phoneNumber(signupPhoneNumEdit.getText().toString())
+                        .nickname(signupNicknameEdit.getText().toString())
+                        .build();
 
-                // 로그인 페이지로 이동
-                clearSignupForm();
-                signupForm.setVisibility(View.GONE);
-                loginForm.setVisibility(View.VISIBLE);
+                MemberService memberService = new MemberService();
+                memberService.signup(signupReq, new RepositoryCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        // 로그인 페이지로 이동
+                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                        clearSignupForm();
+                        signupForm.setVisibility(View.GONE);
+                        loginForm.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         });
     }
@@ -105,5 +134,23 @@ public class LoginActivity extends AppCompatActivity {
         signupPasswordRepeatEdit.setText("");
         signupPhoneNumEdit.setText("");
         signupNicknameEdit.setText("");
+    }
+
+    private void setup(){
+        loginForm = findViewById(R.id.login_form);
+        signupForm = findViewById(R.id.signup_form);
+
+        loginButton = findViewById(R.id.loginButton);
+        goSignupPageButton = findViewById(R.id.goSignupPageButton);
+        backToLoginButton = findViewById(R.id.backToLoginPageButton);
+        signupButton = findViewById(R.id.signupButton);
+
+        loginEmailEdit = findViewById(R.id.loginEmailEdit);
+        loginPasswordEdit = findViewById(R.id.loginPasswordEdit);
+        signupEmailEdit = findViewById(R.id.signupEmailEdit);
+        signupPasswordEdit = findViewById(R.id.signupPasswordEdit);
+        signupPasswordRepeatEdit = findViewById(R.id.signupPasswordRepeatEdit);
+        signupPhoneNumEdit = findViewById(R.id.signupPhoneNumEdit);
+        signupNicknameEdit = findViewById(R.id.signupNicknameEdit);
     }
 }
