@@ -1,6 +1,7 @@
 package com.example.capstone.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -63,7 +64,17 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(ExceptionCode exceptionCode, Map<String, String> errorMessages) {
-                        Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
+
+                        if(errorMessages != null){
+                            showErrorMessageLogin(errorMessages);
+                        }
+                        if(errorMessages.containsKey("message")){
+                            Toast.makeText(LoginActivity.this, errorMessages.get("message"), Toast.LENGTH_SHORT).show();
+
+                        }
+                        else{
+                            Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
@@ -97,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                 SignupReq signupReq = SignupReq.builder()
                         .email(signupEmailEdit.getText().toString())
                         .password(signupPasswordEdit.getText().toString())
-                        .passwordRepeat(signupPasswordRepeatEdit.getText().toString())
+                        .confirmPassword(signupPasswordRepeatEdit.getText().toString())
                         .phoneNumber(signupPhoneNumEdit.getText().toString())
                         .nickname(signupNicknameEdit.getText().toString())
                         .build();
@@ -115,7 +126,16 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(ExceptionCode exceptionCode, Map<String, String> errorMessages) {
-                        Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
+                        if(errorMessages != null){
+                            showErrorMessageSignup(errorMessages);
+                        }
+                        if(errorMessages.containsKey("message")){
+                            Toast.makeText(LoginActivity.this, errorMessages.get("message"), Toast.LENGTH_SHORT).show();
+
+                        }
+                        else{
+                            Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -155,5 +175,49 @@ public class LoginActivity extends AppCompatActivity {
         signupPasswordRepeatEdit = findViewById(R.id.signupPasswordRepeatEdit);
         signupPhoneNumEdit = findViewById(R.id.signupPhoneNumEdit);
         signupNicknameEdit = findViewById(R.id.signupNicknameEdit);
+    }
+
+    private void showErrorMessageSignup(Map<String, String> errorMessages){
+
+        if(errorMessages.containsKey("email")){
+            signupEmailEdit.setText("");
+            signupEmailEdit.setHintTextColor(Color.RED);
+            signupEmailEdit.setHint(errorMessages.get("email"));
+        }
+        if(errorMessages.containsKey("password")){
+            signupPasswordEdit.setText("");
+            signupPasswordEdit.setHintTextColor(Color.RED);
+            signupPasswordEdit.setHint(errorMessages.get("password"));
+        }
+        if(errorMessages.containsKey("confirmPassword")){
+            signupPasswordRepeatEdit.setText("");
+            signupPasswordRepeatEdit.setHintTextColor(Color.RED);
+            signupPasswordRepeatEdit.setHint(errorMessages.get("confirmPassword"));
+        }
+        if(errorMessages.containsKey("nickname")){
+            signupNicknameEdit.setText("");
+            signupNicknameEdit.setHintTextColor(Color.RED);
+            signupNicknameEdit.setHint(errorMessages.get("nickname"));
+        }
+        if(errorMessages.containsKey("phoneNumber")){
+            signupPhoneNumEdit.setText("");
+            signupPhoneNumEdit.setHintTextColor(Color.RED);
+            signupPhoneNumEdit.setHint(errorMessages.get("phoneNumber"));
+        }
+    }
+
+    private void showErrorMessageLogin(Map<String, String> errorMessages){
+
+        if(errorMessages.containsKey("email")){
+            loginEmailEdit.setText("");
+            loginEmailEdit.setHintTextColor(Color.RED);
+            loginEmailEdit.setHint(errorMessages.get("email"));
+        }
+        if(errorMessages.containsKey("password")){
+            loginPasswordEdit.setText("");
+            loginPasswordEdit.setHintTextColor(Color.RED);
+            loginPasswordEdit.setHint(errorMessages.get("password"));
+        }
+
     }
 }

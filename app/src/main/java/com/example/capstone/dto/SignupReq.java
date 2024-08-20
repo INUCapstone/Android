@@ -11,15 +11,15 @@ public class SignupReq {
 
     private String email;
     private String password;
-    private String passwordRepeat;
+    private String confirmPassword;
     private String nickname;
     private String phoneNumber;
 
     @Builder
-    public SignupReq(String email, String password, String passwordRepeat, String nickname, String phoneNumber){
+    public SignupReq(String email, String password, String confirmPassword, String nickname, String phoneNumber){
         this.email=email;
         this.password=password;
-        this.passwordRepeat=passwordRepeat;
+        this.confirmPassword = confirmPassword;
         this.nickname=nickname;
         this.phoneNumber=phoneNumber;
     }

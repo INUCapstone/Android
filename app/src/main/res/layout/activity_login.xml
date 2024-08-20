@@ -16,7 +16,7 @@
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,14 +122,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/signup_form"
         android:layout_width="match_parent"
-        android:layout_height="560dp"
+        android:layout_height="620dp"
         android:layout_margin="24dp"
         android:backgroundTint="@color/white"
         android:layout_centerInParent="true"
         android:padding="24dp"
         app:cardCornerRadius="36dp"
         app:cardElevation="8dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -155,7 +155,6 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="44dp"
                 android:layout_marginBottom="6dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -179,7 +178,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="6dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -252,7 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="46dp">
 
                 <TextView
                     android:layout_width="wrap_content"
