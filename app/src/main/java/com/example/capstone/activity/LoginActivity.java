@@ -13,8 +13,11 @@ import androidx.cardview.widget.CardView;
 import com.example.capstone.R;
 import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.service.MemberService;
+import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.dto.LoginReq;
 import com.example.capstone.dto.SignupReq;
+
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,8 +62,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(String errorMessage) {
-                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    public void onFailure(ExceptionCode exceptionCode, Map<String, String> errorMessages) {
+                        Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -111,8 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(String errorMessage) {
-                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    public void onFailure(ExceptionCode exceptionCode, Map<String, String> errorMessages) {
+                        Toast.makeText(LoginActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
