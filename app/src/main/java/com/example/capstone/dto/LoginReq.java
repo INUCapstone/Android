@@ -1,7 +1,5 @@
 package com.example.capstone.dto;
 
-import com.example.capstone.activity.LoginActivity;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

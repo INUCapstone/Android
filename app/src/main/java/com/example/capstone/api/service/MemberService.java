@@ -1,10 +1,13 @@
 package com.example.capstone.api.service;
 
+import android.content.Context;
+
 import com.example.capstone.api.ApiController;
 import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.RetrofitClient;
 import com.example.capstone.common.ErrorMessageBinding;
 import com.example.capstone.common.ExceptionCode;
+import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.LoginReq;
 import com.example.capstone.dto.SignupReq;
 
@@ -12,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -23,9 +25,11 @@ import retrofit2.Response;
 public class MemberService {
 
     private ApiController apiController;
+    private TokenManager tokenManager;
 
-    public MemberService() {
+    public MemberService(Context context) {
         this.apiController = RetrofitClient.getInstance();
+        this.tokenManager = new TokenManager(context);
     }
 
     public void signup(SignupReq signupReq, final RepositoryCallback callback) {
@@ -72,8 +76,19 @@ public class MemberService {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    // 성공 시 콜백 호출
-                    callback.onSuccess("로그인 성공");
+                    try{
+                        String responseBodyString = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBodyString);
+                        String accessToken = jsonObject.getString("access_token");
+
+                        // 토큰을 저장
+                        tokenManager.saveToken(accessToken);
+
+                        // 성공 시 콜백 호출
+                        callback.onSuccess("로그인 성공");
+                    }catch (Exception e){
+                        callback.onFailure(ExceptionCode.SAVE_FAILE_TOKEN, null);
+                    }
                 }
                 else if(response.code() == 400 ){
                     try {

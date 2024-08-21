@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                         .password(loginPasswordEdit.getText().toString())
                         .build();
 
-                MemberService memberService = new MemberService();
+                MemberService memberService = new MemberService(LoginActivity.this);
                 memberService.login(loginReq, new RepositoryCallback() {
                     @Override
                     public void onSuccess(String message) {
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                         .nickname(signupNicknameEdit.getText().toString())
                         .build();
 
-                MemberService memberService = new MemberService();
+                MemberService memberService = new MemberService(LoginActivity.this);
                 memberService.signup(signupReq, new RepositoryCallback() {
                     @Override
                     public void onSuccess(String message) {

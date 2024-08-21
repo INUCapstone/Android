@@ -1,13 +1,11 @@
 package com.example.capstone.common;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import android.util.Log;
 
 public class ErrorMessageBinding {
 
