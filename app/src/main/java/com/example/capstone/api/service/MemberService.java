@@ -1,6 +1,7 @@
 package com.example.capstone.api.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.capstone.api.ApiController;
 import com.example.capstone.api.RepositoryCallback;
@@ -79,14 +80,15 @@ public class MemberService {
                     try{
                         String responseBodyString = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseBodyString);
-                        String accessToken = jsonObject.getString("access_token");
+                        String accessToken = jsonObject.getJSONObject("response").getString("accessToken");
 
-                        // 토큰을 저장
+                        // 토큰 저장
                         tokenManager.saveToken(accessToken);
 
                         // 성공 시 콜백 호출
                         callback.onSuccess("로그인 성공");
                     }catch (Exception e){
+                        Log.d("token","토큰 저장실패"+e.toString());
                         callback.onFailure(ExceptionCode.SAVE_FAILE_TOKEN, null);
                     }
                 }

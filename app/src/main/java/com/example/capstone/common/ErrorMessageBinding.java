@@ -12,10 +12,10 @@ public class ErrorMessageBinding {
     public static Map<String, String> getErrorMessages(JSONObject jsonObject) throws JSONException {
 
         Map<String, String> errorMessages = new HashMap<>();
-        if(jsonObject.optJSONArray("validationErrors") == null){
-            errorMessages.put("message",jsonObject.optString("message"));
-        }
-        else{
+
+        errorMessages.put("message",jsonObject.optString("message"));
+
+        if(jsonObject.optJSONArray("validationErrors") != null){
             JSONArray validationErrors = jsonObject.optJSONArray("validationErrors");
 
             for (int i = 0; i < validationErrors.length(); i++) {

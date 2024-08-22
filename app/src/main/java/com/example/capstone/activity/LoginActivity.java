@@ -68,7 +68,8 @@ public class LoginActivity extends AppCompatActivity {
                         if(errorMessages != null){
                             showErrorMessageLogin(errorMessages);
                         }
-                        if(errorMessages.containsKey("message")){
+
+                        if(errorMessages != null && errorMessages.containsKey("message")){
                             Toast.makeText(LoginActivity.this, errorMessages.get("message"), Toast.LENGTH_SHORT).show();
 
                         }
@@ -129,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(errorMessages != null){
                             showErrorMessageSignup(errorMessages);
                         }
-                        if(errorMessages.containsKey("message")){
+                        if(errorMessages != null && errorMessages.containsKey("message")){
                             Toast.makeText(LoginActivity.this, errorMessages.get("message"), Toast.LENGTH_SHORT).show();
 
                         }
