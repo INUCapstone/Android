@@ -6,6 +6,8 @@ import com.example.capstone.dto.SignupReq;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface ApiController {
@@ -15,4 +17,7 @@ public interface ApiController {
 
     @POST("/members/login")
     Call<ResponseBody> login(@Body LoginReq loginReq);
+
+    @GET("/members")
+    Call<ResponseBody> getUserInfo(@Header("Authorization") String token);
 }

@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 
 import com.example.capstone.R;
 import com.example.capstone.api.RepositoryCallback;
-import com.example.capstone.api.service.MemberService;
+import com.example.capstone.api.service.LoginService;
 import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.dto.LoginReq;
 import com.example.capstone.dto.SignupReq;
@@ -49,8 +49,8 @@ public class LoginActivity extends AppCompatActivity {
                         .password(loginPasswordEdit.getText().toString())
                         .build();
 
-                MemberService memberService = new MemberService(LoginActivity.this);
-                memberService.login(loginReq, new RepositoryCallback() {
+                LoginService loginService = new LoginService(LoginActivity.this);
+                loginService.login(loginReq, new RepositoryCallback() {
                     @Override
                     public void onSuccess(String message) {
                         // MainActivity로 이동
@@ -114,8 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                         .nickname(signupNicknameEdit.getText().toString())
                         .build();
 
-                MemberService memberService = new MemberService(LoginActivity.this);
-                memberService.signup(signupReq, new RepositoryCallback() {
+                LoginService loginService = new LoginService(LoginActivity.this);
+                loginService.signup(signupReq, new RepositoryCallback() {
                     @Override
                     public void onSuccess(String message) {
                         // 로그인 페이지로 이동
