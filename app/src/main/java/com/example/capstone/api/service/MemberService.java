@@ -13,10 +13,16 @@ import com.example.capstone.activity.LoginActivity;
 import com.example.capstone.api.ApiController;
 import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.RetrofitClient;
+import com.example.capstone.common.ErrorMessageBinding;
 import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.common.TokenManager;
+import com.example.capstone.dto.ModifyUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -63,6 +69,48 @@ public class MemberService {
                 }
                 else if(response.code() == 400){
                     callback.onFailure(ExceptionCode.INPUT_VAILDATION_ERORR,null);
+                }
+                else{
+                    callback.onFailure(ExceptionCode.AUTH_FAIL,null);
+                    redirectToLogin();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(ExceptionCode.NETWORK_ERROR, null);
+            }
+        });
+    }
+
+    public void modifyUserInfo(ModifyUser modifyUser, final RepositoryCallback callback){
+        String token = tokenManager.getAccessToken();
+
+        apiController.modifyUserInfo(token,modifyUser).enqueue(new Callback<ResponseBody>(){
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+                    // 성공 시 콜백 호출
+                    callback.onSuccess("유저정보 수정 성공");
+                }
+                else if(response.code() == 500 ){
+                    callback.onFailure(ExceptionCode.SERVER_INNER_ERROR,null);
+                }
+                else if(response.code() == 400){
+                    try {
+                        // 실패 시 콜백 호출
+                        String errorBody = response.errorBody().string();
+                        JSONObject jsonObject = null;
+                        jsonObject = new JSONObject(errorBody);
+                        Map<String, String> errorMessages = ErrorMessageBinding.getErrorMessages(jsonObject);
+                        callback.onFailure(ExceptionCode.INPUT_VAILDATION_ERORR, errorMessages);
+
+                    } catch (JSONException e) {
+                        callback.onFailure(ExceptionCode.SERVER_INNER_ERROR,null);
+                    } catch (IOException e) {
+                        callback.onFailure(ExceptionCode.SERVER_INNER_ERROR,null);
+                    }
                 }
                 else{
                     callback.onFailure(ExceptionCode.AUTH_FAIL,null);

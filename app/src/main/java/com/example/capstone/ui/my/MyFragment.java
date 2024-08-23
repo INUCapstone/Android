@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,30 +30,10 @@ public class MyFragment extends Fragment {
 
         binding = FragmentMyBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        emailInfo = root.findViewById(R.id.emailInfo);
-        nickNameInfo = root.findViewById(R.id.nickNameInfo);
-        phoneNumberInfo = root.findViewById(R.id.phoneNumberInfo);
-        pointInfo = root.findViewById(R.id.pointInfo);
+        setup(root);
 
         if(getArguments() != null){
-
-            String data = getArguments().getString("myInfo");
-            try {
-                JSONObject jsonObject = new JSONObject(data);
-                JSONObject memberInfo = jsonObject.optJSONObject("response");
-                String email = memberInfo.optString("email", "정보 없음");
-                String nickName = memberInfo.optString("nickname", "정보 없음");
-                String phoneNumber = memberInfo.optString("phoneNumber", "정보 없음");
-                String point = memberInfo.optInt("point",0)+"원";
-                emailInfo.setText(email);
-                nickNameInfo.setText(nickName);
-                phoneNumberInfo.setText(phoneNumber);
-                pointInfo.setText(point);
-
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            showUserInfo();
         }
 
         return root;
@@ -62,5 +43,31 @@ public class MyFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void showUserInfo(){
+        String data = getArguments().getString("myInfo");
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            JSONObject memberInfo = jsonObject.optJSONObject("response");
+            String email = memberInfo.optString("email", "정보 없음");
+            String nickName = memberInfo.optString("nickname", "정보 없음");
+            String phoneNumber = memberInfo.optString("phoneNumber", "정보 없음");
+            String point = memberInfo.optInt("point",0)+"원";
+            emailInfo.setText(email);
+            nickNameInfo.setText(nickName);
+            phoneNumberInfo.setText(phoneNumber);
+            pointInfo.setText(point);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setup(View root){
+        emailInfo = root.findViewById(R.id.emailInfo);
+        nickNameInfo = root.findViewById(R.id.nickNameInfo);
+        phoneNumberInfo = root.findViewById(R.id.phoneNumberInfo);
+        pointInfo = root.findViewById(R.id.pointInfo);
     }
 }
