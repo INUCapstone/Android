@@ -14,7 +14,7 @@
         app:cardBackgroundColor="@color/myInfoCard"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -182,7 +182,7 @@
         app:cardBackgroundColor="@color/myInfoCard"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -244,7 +244,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:inputType="textPassword"
-                    android:text="tester1" />
+                    android:hint="비밀번호" />
             </LinearLayout>
 
             <LinearLayout
@@ -268,7 +268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:inputType="textPassword"
-                    android:text="tester1" />
+                    android:hint="변경을 원하지 않을 시 기존비밀번호 입력"/>
             </LinearLayout>
 
             <android.widget.Button
