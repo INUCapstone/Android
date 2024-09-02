@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.capstone.R;
-import com.example.capstone.activity.MainActivity;
 import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.service.MemberService;
 import com.example.capstone.common.ExceptionCode;

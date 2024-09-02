@@ -1,18 +1,12 @@
 package com.example.capstone.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -23,7 +17,6 @@ import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.service.MemberService;
 import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.databinding.ActivityMainBinding;
-import com.example.capstone.dto.ModifyUser;
 
 import java.util.Map;
 
@@ -69,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (destinationId == R.id.navigation_matching && !hasRequestedMatching) {
             sendRequestToServer("notifications");
         } else if (destinationId == R.id.navigation_charge && !hasRequestedCharge) {
-            sendRequestToServer("my");
+            sendChargePage();
         }
     }
 
@@ -79,6 +72,28 @@ public class MainActivity extends AppCompatActivity {
         hasRequestedCharge = true;
         hasRequestedDriver = true;
         hasRequestedMatching = true;
+    }
+
+    private void sendChargePage(){
+        hasRequestedCharge = true;
+        hasRequestedDriver = false;
+        hasRequestedMatching = false;
+        hasRequestedMy = false;
+
+        MemberService memberService = new MemberService(MainActivity.this);
+        memberService.getUserInfo(new RepositoryCallback(){
+
+            @Override
+            public void onSuccess(String message) {
+
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(ExceptionCode exceptionCode, Map<String, String> errorMessages) {
+                Toast.makeText(MainActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void sendMyPage(){

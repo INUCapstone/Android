@@ -1,5 +1,6 @@
 package com.example.capstone.api;
 
+import com.example.capstone.dto.ChargePointReq;
 import com.example.capstone.dto.LoginReq;
 import com.example.capstone.dto.ModifyUser;
 import com.example.capstone.dto.SignupReq;
@@ -25,4 +26,7 @@ public interface ApiController {
 
     @PATCH("/members")
     Call<ResponseBody> modifyUserInfo(@Header("Authorization") String token, @Body ModifyUser modifyUser);
+
+    @PATCH("/members/point")
+    Call<ResponseBody> chargePoint(@Header("Authorization") String token, @Body ChargePointReq chargePointReq);
 }
