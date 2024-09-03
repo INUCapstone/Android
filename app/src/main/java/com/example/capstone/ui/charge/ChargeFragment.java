@@ -108,7 +108,7 @@ public class ChargeFragment extends Fragment {
                         long chargingPoint = Long.parseLong(chargingPointEdit.getText().toString());
                         currentPoint += chargingPoint;
 
-                        currentPointText.setText(chargingPoint+"원");
+                        currentPointText.setText(currentPoint+"원");
                         chargingPointEdit.setText("0");
                         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                     }

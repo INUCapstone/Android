@@ -58,15 +58,15 @@ public class MainActivity extends AppCompatActivity {
         if (destinationId == R.id.navigation_my && !hasRequestedMy) {
             sendMyPage();
         } else if (destinationId == R.id.navigation_driver && !hasRequestedDriver) {
-            sendRequestToServer("dashboard");
+            sendRequestToServer();
         } else if (destinationId == R.id.navigation_matching && !hasRequestedMatching) {
-            sendRequestToServer("notifications");
+            sendMatching();
         } else if (destinationId == R.id.navigation_charge && !hasRequestedCharge) {
             sendChargePage();
         }
     }
 
-    private void sendRequestToServer(String pageName) {
+    private void sendRequestToServer() {
         // 미구현
         hasRequestedMy = false;
         hasRequestedCharge = true;
@@ -116,5 +116,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, exceptionCode.getExceptionMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendMatching(){
+        hasRequestedCharge = false;
+        hasRequestedDriver = false;
+        hasRequestedMatching = true;
+        hasRequestedMy = false;
+
     }
 }
