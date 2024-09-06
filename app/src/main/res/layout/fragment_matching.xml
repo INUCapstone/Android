@@ -1,44 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="445dp"
+        android:layout_height="match_parent"
         android:layout_margin="24dp"
-        android:layout_centerInParent="true"
         android:padding="24dp"
         android:visibility="visible" />
 
-    <android.widget.Button
-        android:id="@+id/startMatchingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_my_page"
-        android:text="매칭잡기"
-        android:textColor="@color/green"
-        android:textSize="25sp"
-        android:visibility="visible" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <android.widget.Button
-        android:id="@+id/stopMatchingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_weight="1"
-        android:background="@drawable/button_my_page"
-        android:text="그만두기"
-        android:textColor="@color/green"
-        android:textSize="25sp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"/>
+        <android.widget.Button
+            android:id="@+id/startMatchingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_my_page"
+            android:text="매칭잡기"
+            android:textColor="@color/green"
+            android:textSize="25sp"
+            android:layout_marginBottom="60dp"
+            android:visibility="visible"/>
 
-</LinearLayout>
+        <android.widget.Button
+            android:id="@+id/stopMatchingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_my_page"
+            android:text="그만두기"
+            android:textColor="@color/green"
+            android:textSize="25sp"
+            android:layout_marginBottom="60dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</FrameLayout>
