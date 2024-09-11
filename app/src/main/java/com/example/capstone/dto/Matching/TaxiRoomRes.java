@@ -24,12 +24,15 @@ public class TaxiRoomRes {
     // 참여자 닉네임 리스트
     private List<MemberInfo> memberList;
 
-    public TaxiRoomRes(Long roomId, Long currentMemberCnt, List<PathInfo> pathInfoList, Long time, Long charge, List<MemberInfo> memberList){
+    private boolean isDelete;
+
+    public TaxiRoomRes(Long roomId, Long currentMemberCnt, List<PathInfo> pathInfoList, Long time, Long charge, List<MemberInfo> memberList, boolean isDelete){
         this.charge=charge;
         this.roomId =roomId;
         this.memberList=memberList;
         this.pathInfoList=pathInfoList;
         this.currentMemberCnt=currentMemberCnt;
         this.time=time;
+        this.isDelete=isDelete;
     }
 }

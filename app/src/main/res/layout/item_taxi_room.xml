@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="정원 : 1/4"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/memberList"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="5dp"
-                android:text="경로보기"
+                android:text="경 로"
                 android:textSize="20sp"/>
 
             <android.widget.Button
@@ -72,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="80dp"
-                android:layout_marginTop="50dp"
-                android:text="출 발"
+                android:layout_marginTop="25dp"
+                android:text="준 비"
                 android:textSize="20sp" />
         </LinearLayout>
 

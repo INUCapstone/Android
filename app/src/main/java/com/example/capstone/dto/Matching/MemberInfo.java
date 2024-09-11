@@ -7,10 +7,13 @@ public class MemberInfo {
 
     private String nickname;
 
+    private String memberId;
+
     private boolean isReady;
 
-    public MemberInfo(String nickname, boolean isReady){
+    public MemberInfo(String nickname, String memberId,boolean isReady){
         this.isReady=isReady;
+        this.memberId=memberId;
         this.nickname=nickname;
     }
 }

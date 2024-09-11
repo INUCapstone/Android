@@ -20,24 +20,24 @@
 
         <android.widget.Button
             android:id="@+id/startMatchingButton"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/button_my_page"
+            android:background="@color/green"
             android:text="매칭잡기"
-            android:textColor="@color/green"
+            android:textColor="@color/white"
             android:textSize="25sp"
             android:layout_marginBottom="60dp"
             android:visibility="visible"/>
 
         <android.widget.Button
             android:id="@+id/stopMatchingButton"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/button_my_page"
+            android:background="@color/red"
             android:text="그만두기"
-            android:textColor="@color/green"
+            android:textColor="@color/white"
             android:textSize="25sp"
             android:layout_marginBottom="60dp"
             android:visibility="gone"/>

@@ -18,7 +18,6 @@ import com.example.capstone.dto.Matching.TaxiRoomRes;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MatchingFragment extends Fragment {
 
     private FragmentMatchingBinding binding;

@@ -35,9 +35,9 @@ public class SocketService {
         List<PathInfo> pathInfoList = new ArrayList<>();
         List<MemberInfo> memberInfoList = new ArrayList<>();
         pathInfoList.add(new PathInfo(10L,20L));
-        memberInfoList.add(new MemberInfo("박세용",true));
-        memberInfoList.add(new MemberInfo("김강욱",false));
-        TaxiRoomRes roomData = new TaxiRoomRes(1L,3l,pathInfoList,30L,20L,memberInfoList);
+        memberInfoList.add(new MemberInfo("박세용","1",true));
+        memberInfoList.add(new MemberInfo("김강욱","2",false));
+        TaxiRoomRes roomData = new TaxiRoomRes(1L,3l,pathInfoList,30L,20L,memberInfoList,false);
 
         roomList.add(roomData);
         adapter.notifyDataSetChanged();
