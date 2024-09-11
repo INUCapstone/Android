@@ -10,13 +10,15 @@
         android:id="@+id/item_taxi_room"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/recycle_border">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:id="@+id/time"
@@ -58,21 +60,25 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <android.widget.Button
+            <android.widget.ImageButton
                 android:id="@+id/showPathButton"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="80dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/path"
+                android:background="@color/white"
                 android:text="경 로"
                 android:textSize="20sp"/>
 
             <android.widget.Button
                 android:id="@+id/readyButton"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="25dp"
+                android:background="@drawable/button_background"
+                android:textColor="@color/green"
                 android:text="준 비"
                 android:textSize="20sp" />
         </LinearLayout>
