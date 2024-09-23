@@ -1,9 +1,14 @@
 package com.example.capstone.ui.matching;
 
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,10 +43,27 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.currentMemberCntTextView.setText("정원 : " + roomData.getCurrentMemberCnt() + "/4");
 
         StringBuilder memberNames = new StringBuilder();
-
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         for (MemberInfo member : roomData.getMemberList()) {
-            if (memberNames.length() > 0) memberNames.append(", ");
+
+            if (memberNames.length() > 0)
+                memberNames.append(", ");
+
             memberNames.append(member.getNickname());
+
+            // 색상을 설정할 위치 계산
+            int start = spannableStringBuilder.length();
+            spannableStringBuilder.append(member.getNickname());
+            int end = spannableStringBuilder.length();
+
+            // isReady가 true인 경우 초록색으로 설정
+            if (member.isReady()) {
+                spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GREEN), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            else{
+                spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.RED), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            }
         }
         holder.memberListTextView.setText(memberNames.toString());
     }
@@ -53,7 +75,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     static class RoomViewHolder extends RecyclerView.ViewHolder {
         TextView timeTextView, chargeTextView, currentMemberCntTextView, memberListTextView;
-        Button showPathButton, readyButton;
+        Button readyButton;
+        ImageButton showPathButton;
+
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
             timeTextView = itemView.findViewById(R.id.time);

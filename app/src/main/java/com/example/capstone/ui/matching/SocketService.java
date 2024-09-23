@@ -98,24 +98,35 @@ public class SocketService {
     }
 
     private void changeRoomList(TaxiRoomRes roomData){
-
-        // 방이 없어지면
-        if(roomData.isDelete()){
-
+        boolean isNew = true;
+        int index = 0;
+        for(TaxiRoomRes room : roomList){
+            if(room.getRoomId() == roomData.getRoomId()){
+                isNew = false;
+                break;
+            }
+            index++;
         }
-        // 방이 출발했으면. 내가 있는 방이 출발한 경우다.
-        else if(roomData.isStart()){
 
-        }
-        // 방이 변경됐으면
-        else if(false){
-
-        }
         // 방이 새롭게 추가된 방이면
-        else{
+        if(isNew){
             roomList.add(roomData);
         }
+        // 방이 없어지면, roomList에서 해당 방을 삭제한다.
+        else if(roomData.isDelete()){
+            roomList.remove(index);
+        }
+        // 방의 모든 인원이 레디하여 출발한 경우, 소켓연결을 끊고 기사정보를 받아오는 요청을 보낸다.
+        else if(roomData.isStart()){
+            roomList.remove(index);
+            stopSocketConnection();
 
+            // 기사정보 가져오는 로직
+        }
+        // 방이 변경됐으면(ex.누가 레디를 하거나 푼 경우), 해당 방의 정보를 변경해준다.
+        else{
+            roomList.set(index,roomData);
+        }
     }
 }
 
