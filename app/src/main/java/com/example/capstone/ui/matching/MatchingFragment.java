@@ -41,7 +41,7 @@ public class MatchingFragment extends Fragment {
         startMatchingButton = root.findViewById(R.id.startMatchingButton);
         stopMatchingButton = root.findViewById(R.id.stopMatchingButton);
 
-        socketService = new SocketService(roomList, adapter);
+        socketService = new SocketService(roomList,adapter,getContext());
 
         // 매칭 시작 버튼 클릭 시
         startMatchingButton.setOnClickListener(v -> {

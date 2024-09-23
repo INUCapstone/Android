@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class TaxiRoomRes {
+public class TaxiRoomRes{
 
     private Long roomId;
 
@@ -26,13 +26,18 @@ public class TaxiRoomRes {
 
     private boolean isDelete;
 
-    public TaxiRoomRes(Long roomId, Long currentMemberCnt, List<PathInfo> pathInfoList, Long time, Long charge, List<MemberInfo> memberList, boolean isDelete){
+    private boolean isStart;
+
+    public TaxiRoomRes(Long roomId, Long currentMemberCnt, List<PathInfo> pathInfoList, Long time, Long charge,
+                       List<MemberInfo> memberList, boolean isDelete, boolean isStart){
         this.charge=charge;
         this.roomId =roomId;
         this.memberList=memberList;
         this.pathInfoList=pathInfoList;
         this.currentMemberCnt=currentMemberCnt;
         this.time=time;
+        this.isStart= isStart;
         this.isDelete=isDelete;
     }
+
 }

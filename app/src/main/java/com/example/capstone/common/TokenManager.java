@@ -2,12 +2,6 @@ package com.example.capstone.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Base64;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 
 public class TokenManager {
 
@@ -37,15 +31,4 @@ public class TokenManager {
         editor.apply();
     }
 
-    public String getUserIdByToken(String token) throws JSONException, UnsupportedEncodingException {
-        String[] split = token.split("\\.");
-        String payload = getJson(split[1]);
-        JSONObject jsonObject = new JSONObject(payload);
-        return jsonObject.getString("sub");
-    }
-
-    private static String getJson(String strEncoded) throws UnsupportedEncodingException {
-        byte[] decodedBytes = Base64.decode(strEncoded, Base64.URL_SAFE);
-        return new String(decodedBytes, "UTF-8");
-    }
 }

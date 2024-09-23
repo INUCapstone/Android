@@ -9,13 +9,16 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        mavenCentral()  // Maven Central 추가
+        maven { url "https://jitpack.io" }  // JitPack 저장소 추가
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)  // settings.gradle의 저장소를 우선함
     repositories {
         google()
-        mavenCentral()
+        mavenCentral()  // Maven Central 추가
+        maven { url "https://jitpack.io" }  // JitPack 저장소 추가
     }
 }
 
