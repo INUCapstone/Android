@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Manifest file
+**/AndroidManifest.xml
+
+# NaverService class
+**/NaverService.java

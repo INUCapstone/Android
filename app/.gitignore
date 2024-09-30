@@ -1,1 +1,7 @@
 /build
+
+# Manifest file
+**/AndroidManifest.xml
+
+# NaverService class
+**/NaverService.java
