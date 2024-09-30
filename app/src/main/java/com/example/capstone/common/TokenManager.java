@@ -3,6 +3,8 @@ package com.example.capstone.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.auth0.android.jwt.JWT;
+
 public class TokenManager {
 
     private SharedPreferences sharedPreferences;
@@ -23,6 +25,11 @@ public class TokenManager {
     // 토큰을 userId를 키로 사용하여 가져오는 메서드
     public String getAccessToken() {
         return sharedPreferences.getString("accessToken", "notExist");
+    }
+
+    public Long getMemberId(){
+        JWT jwt = new JWT(getAccessToken());
+        return Long.parseLong(jwt.getSubject());
     }
 
     // 모든 토큰을 삭제하는 메서드

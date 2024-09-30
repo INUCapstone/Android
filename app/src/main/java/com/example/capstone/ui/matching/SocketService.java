@@ -56,18 +56,19 @@ public class SocketService {
     public void startSocketConnection() {
         getLocation(); // 위치 정보를 가져옴
 
+        // 위도 y
         String latitudes = Double.toString(latitude);
+        // 경도 x
         String longitudes = Double.toString(longitude);
 
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51/ws/websocket");
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
+
         // 헤더에 토큰 추가
         List<StompHeader> headers = new ArrayList<>();
-        headers.add(new StompHeader("Authorization", "Bearer " + tokenManager.getAccessToken()));
-        headers.add(new StompHeader("Latitude ", latitudes));   // 위도 추가
-        headers.add(new StompHeader("Longitude ", longitudes)); // 경도 추가
-
-        // STOMP 클라이언트 연결
-        stompClient.connect(headers);
+        Log.d("토큰",tokenManager.getAccessToken());
+        headers.add(new StompHeader("Authorization", tokenManager.getAccessToken()));
+        headers.add(new StompHeader("startY", latitudes));   // 위도 추가
+        headers.add(new StompHeader("startX", longitudes)); // 경도 추가
 
         // STOMP 연결 시도
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
@@ -77,6 +78,7 @@ public class SocketService {
                     subscribeToRoomUpdates(); // 방 정보 업데이트 구독
                     break;
                 case ERROR:
+                    Log.d("에러",lifecycleEvent.getException().getMessage());
                     lifecycleEvent.getException().printStackTrace();
                     break;
                 case CLOSED:
@@ -84,11 +86,16 @@ public class SocketService {
                     break;
             }
         });
+
+        // STOMP 클라이언트 연결
+        stompClient.connect(headers);
     }
 
     // 메시지 수신을 대기하고 UI를 업데이트하는 메소드
     private void subscribeToRoomUpdates() {
-        topicDisposable = stompClient.topic("/sub")
+
+
+        topicDisposable = stompClient.topic("/sub/match/"+tokenManager.getMemberId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
                     String finalMessage = topicMessage.getPayload();

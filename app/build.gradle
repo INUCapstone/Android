@@ -66,4 +66,7 @@ dependencies {
 
     // gps
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation 'com.auth0.android:jwtdecode:2.0.0'
+
 }
