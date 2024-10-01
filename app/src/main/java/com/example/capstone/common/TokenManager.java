@@ -28,7 +28,11 @@ public class TokenManager {
     }
 
     public Long getMemberId(){
-        JWT jwt = new JWT(getAccessToken());
+        // Bearer 제거
+        String token = getAccessToken().replace("Bearer ", "");
+
+        // JWT 디코딩
+        JWT jwt = new JWT(token);
         return Long.parseLong(jwt.getSubject());
     }
 

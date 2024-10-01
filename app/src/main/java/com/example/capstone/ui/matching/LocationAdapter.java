@@ -16,6 +16,7 @@ import java.util.List;
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
 
     private final List<DetailInfo> locationInfoList;
+    private SocketService socketService;
 
     public LocationAdapter(List<DetailInfo> locationInfoList) {
         this.locationInfoList = locationInfoList;
@@ -37,6 +38,19 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         String title = detailInfo.getTitle();
         holder.titleTextView.setText(title.replaceAll("<[^>]*>", ""));
         holder.addressTextView.setText(detailInfo.getRoadAddress());
+
+        holder.itemView.setTag(position);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    DetailInfo clickedDetailInfo = locationInfoList.get(pos);
+                    socketService.setEndLocationInfo(clickedDetailInfo);
+                }
+            }
+        });
     }
 
     @Override
@@ -52,6 +66,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             super(itemView);
             titleTextView = itemView.findViewById(R.id.title);
             addressTextView = itemView.findViewById(R.id.roadAddress);
+
         }
+    }
+
+    public void setSocketService(SocketService socketService){
+        this.socketService = socketService;
     }
 }

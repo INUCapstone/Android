@@ -9,11 +9,14 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.example.capstone.R;
 import com.example.capstone.common.TokenManager;
+import com.example.capstone.dto.Matching.DetailInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -43,6 +46,9 @@ public class SocketService {
     private Disposable topicDisposable;
     private FusedLocationProviderClient fusedLocationClient;
     private Context context;
+    private EditText targetLocation;
+    private String endX;
+    private String endY;
 
     public SocketService(List<TaxiRoomRes> roomList, RoomAdapter adapter, Context context) {
         this.roomList = roomList;
@@ -50,6 +56,7 @@ public class SocketService {
         this.tokenManager = new TokenManager(context);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         this.context=context;
+        targetLocation = ((Activity) context).findViewById(R.id.targetLocation);
     }
 
     // 소켓 연결을 시작하는 메소드
@@ -69,6 +76,10 @@ public class SocketService {
         headers.add(new StompHeader("Authorization", tokenManager.getAccessToken()));
         headers.add(new StompHeader("startY", latitudes));   // 위도 추가
         headers.add(new StompHeader("startX", longitudes)); // 경도 추가
+        headers.add(new StompHeader("endY", endY));   // 위도 추가
+        headers.add(new StompHeader("endX", endX)); // 경도 추가
+
+        Log.d("위치",endX+","+endY+","+latitudes+","+longitudes);
 
         // STOMP 연결 시도
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
@@ -185,5 +196,14 @@ public class SocketService {
 
         }
     };
+
+    public void setEndLocationInfo(DetailInfo clickedDetailInfo){
+
+        this.endX = clickedDetailInfo.getMapx();
+        this.endY = clickedDetailInfo.getMapy();
+        String title = clickedDetailInfo.getTitle();
+        targetLocation = ((Activity) context).findViewById(R.id.targetLocation);
+        targetLocation.setText(title.replaceAll("<[^>]*>", ""));
+    }
 }
 

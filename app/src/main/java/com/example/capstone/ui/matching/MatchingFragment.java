@@ -42,6 +42,8 @@ public class MatchingFragment extends Fragment {
         binding = FragmentMatchingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        targetLocation = root.findViewById(R.id.targetLocation);
+
         roomList = new ArrayList<>();
         adapter = new RoomAdapter(roomList);
         locationInfoList = new ArrayList<>();
@@ -60,6 +62,7 @@ public class MatchingFragment extends Fragment {
         findLocationButton = root.findViewById(R.id.findLocationButton);
 
         socketService = new SocketService(roomList,adapter,getContext());
+        locationAdapter.setSocketService(socketService);
 
         // 매칭 시작 버튼 클릭 시
         startMatchingButton.setOnClickListener(v -> {
@@ -67,6 +70,7 @@ public class MatchingFragment extends Fragment {
             startMatchingButton.setVisibility(View.GONE);
             stopMatchingButton.setVisibility(View.VISIBLE);
             findLocationButton.setVisibility(View.GONE);
+            targetLocation.setEnabled(false);
         });
 
         // 매칭 종료 버튼 클릭 시
@@ -75,11 +79,11 @@ public class MatchingFragment extends Fragment {
             startMatchingButton.setVisibility(View.VISIBLE);
             stopMatchingButton.setVisibility(View.GONE);
             findLocationButton.setVisibility(View.VISIBLE);
+            targetLocation.setEnabled(true);
         });
 
         // 도착지 검색 버튼 클릭 시
         findLocationButton.setOnClickListener(v -> {
-            targetLocation = root.findViewById(R.id.targetLocation);
             NaverService naverService = new NaverService(getActivity(), locationInfoList,locationAdapter);
             naverService.getLocation(String.valueOf(targetLocation.getText()), new RepositoryCallback() {
                 @Override
@@ -100,5 +104,9 @@ public class MatchingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void clickLocation(){
+
     }
 }
