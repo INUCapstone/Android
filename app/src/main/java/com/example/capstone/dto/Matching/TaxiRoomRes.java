@@ -2,9 +2,13 @@ package com.example.capstone.dto.Matching;
 
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
+@Builder
 @Getter
+@Setter
 public class TaxiRoomRes{
 
     private Long roomId;
@@ -40,4 +44,7 @@ public class TaxiRoomRes{
         this.isDelete=isDelete;
     }
 
+    public TaxiRoomRes(){
+
+    }
 }

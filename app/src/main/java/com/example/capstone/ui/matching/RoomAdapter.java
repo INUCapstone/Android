@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +45,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
         StringBuilder memberNames = new StringBuilder();
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-        for (MemberInfo member : roomData.getMemberList()) {
 
-            if (memberNames.length() > 0)
+        for (MemberInfo member : roomData.getMemberList()) {
+            if (memberNames.length() > 0) {
                 memberNames.append(", ");
+                spannableStringBuilder.append(", "); // 구분 기호도 spannable에 추가
+            }
 
             memberNames.append(member.getNickname());
 
@@ -59,13 +62,26 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             // isReady가 true인 경우 초록색으로 설정
             if (member.isReady()) {
                 spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GREEN), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            else{
+            } else {
                 spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.RED), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
             }
         }
-        holder.memberListTextView.setText(memberNames.toString());
+
+        // 최종적으로 spannableStringBuilder를 텍스트뷰에 설정
+        holder.memberListTextView.setText(spannableStringBuilder);
+
+        holder.readyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // pub으로 레디 요청 전송
+            }
+        });
+        holder.showPathButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("버튼","버튼 클릭됨");
+            }
+        });
     }
 
     @Override

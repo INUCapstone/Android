@@ -3,22 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="2dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:id="@+id/item_taxi_room"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="1dp"
         android:orientation="horizontal"
         android:background="@drawable/recycle_border">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="10dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="1dp">
 
             <TextView
                 android:id="@+id/time"
@@ -64,22 +65,20 @@
                 android:id="@+id/showPathButton"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
                 android:layout_marginTop="15dp"
-                android:src="@drawable/path"
                 android:background="@color/white"
+                android:src="@drawable/path"
                 android:text="경 로"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <android.widget.Button
                 android:id="@+id/readyButton"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/button_background"
-                android:textColor="@color/green"
                 android:text="준 비"
+                android:textColor="@color/green"
                 android:textSize="20sp" />
         </LinearLayout>
 

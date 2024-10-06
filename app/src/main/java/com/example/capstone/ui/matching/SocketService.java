@@ -18,13 +18,16 @@ import com.example.capstone.R;
 import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.Matching.DetailInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
+import com.example.capstone.dto.Matching.WaitingMemberReqDto;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +70,36 @@ public class SocketService {
         String latitudes = Double.toString(latitude);
         // 경도 x
         String longitudes = Double.toString(longitude);
+        WaitingMemberReqDto data = WaitingMemberReqDto.builder()
+                .startX(longitudes)
+                .startY(latitudes)
+                .endX(endX)
+                .endY(endY)
+                .build();
+
+        /*
+        TaxiRoomRes roomRes = TaxiRoomRes.builder()
+                .roomId(1L)
+                .currentMemberCnt(3L)
+                .pathInfoList(List.of(new PathInfo((long) 127.10991634747967, (long) 37.39447145478345),
+                        new PathInfo((long) 127.10966790676201, (long) 37.394469584427156),
+                        new PathInfo((long) 127.10967141980313, (long) 37.39512739646385),
+                        new PathInfo((long) 127.10968100356395, (long) 37.396226781360426),
+                        new PathInfo((long) 127.10967417816033, (long) 37.39775855885587),
+                        new PathInfo((long) 127.10967417816033, (long) 37.39775855885587)))
+                .time(1000L)
+                .charge(10000L)
+                .memberList(List.of(new MemberInfo("Templar","1", false),
+                        new MemberInfo("Knight","2", false),
+                        new MemberInfo("Templar","1", true)))
+
+                .isDelete(false)
+                .isStart(false)
+                .build();
+
+        changeRoomList(roomRes);
+        adapter.notifyDataSetChanged();
+        */
 
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
 
@@ -74,18 +107,13 @@ public class SocketService {
         List<StompHeader> headers = new ArrayList<>();
         Log.d("토큰",tokenManager.getAccessToken());
         headers.add(new StompHeader("Authorization", tokenManager.getAccessToken()));
-        headers.add(new StompHeader("startY", latitudes));   // 위도 추가
-        headers.add(new StompHeader("startX", longitudes)); // 경도 추가
-        headers.add(new StompHeader("endY", endY));   // 위도 추가
-        headers.add(new StompHeader("endX", endX)); // 경도 추가
-
-        Log.d("위치",endX+","+endY+","+latitudes+","+longitudes);
 
         // STOMP 연결 시도
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
                     isRunning = true;
+                    Log.d("연결시도","===========================================");
                     subscribeToRoomUpdates(); // 방 정보 업데이트 구독
                     break;
                 case ERROR:
@@ -100,24 +128,35 @@ public class SocketService {
 
         // STOMP 클라이언트 연결
         stompClient.connect(headers);
+
+        Gson gson = new Gson();
+
+        stompClient.send("/pub/match/" + tokenManager.getMemberId(), gson.toJson(data))
+                .subscribe(() -> Log.d("매칭 요청", "매칭 시작 요청을 보냈습니다."),
+                        throwable -> Log.d("매칭 요청 실패", throwable.getMessage()));
+
     }
 
     // 메시지 수신을 대기하고 UI를 업데이트하는 메소드
     private void subscribeToRoomUpdates() {
-
-
-        topicDisposable = stompClient.topic("/sub/match/"+tokenManager.getMemberId())
+        Log.d("시발","시발시발시발시발시발시발");
+        topicDisposable = stompClient.topic("/sub/member/"+1L)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
+                    Log.d("혹시","여기?");
                     String finalMessage = topicMessage.getPayload();
-
+                    Log.d("방",finalMessage);
                     uiHandler.post(() -> {
                         // JSON 문자열을 TaxiRoomRes 객체로 파싱
                         Gson gson = new Gson();
-                        TaxiRoomRes roomData = gson.fromJson(finalMessage, TaxiRoomRes.class);
+
+                        Type type = new TypeToken<List<TaxiRoomRes>>() {}.getType();
+                        List<TaxiRoomRes> roomDataList = gson.fromJson(finalMessage, type);
 
                         // RecyclerView 업데이트
-                        changeRoomList(roomData);
+                        for(TaxiRoomRes res : roomDataList){
+                            changeRoomList(res);
+                        }
                         adapter.notifyDataSetChanged();
                     });
                 }, throwable -> {

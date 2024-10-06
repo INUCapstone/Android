@@ -15,9 +15,15 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    repositories {
-        mavenCentral()
-        maven { url "https://jitpack.io" }
+    allprojects {
+        repositories {
+            google()
+            mavenCentral()
+            maven {url "https://jitpack.io"}
+            maven {
+                url 'https://repository.map.naver.com/archive/maven'
+            }
+        }
     }
     buildTypes {
         release {

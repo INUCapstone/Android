@@ -13,6 +13,7 @@ pluginManagement {
         maven { url "https://jitpack.io" }  // JitPack 저장소 추가
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)  // settings.gradle의 저장소를 우선함
     repositories {

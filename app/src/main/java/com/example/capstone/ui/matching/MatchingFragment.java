@@ -64,12 +64,17 @@ public class MatchingFragment extends Fragment {
         socketService = new SocketService(roomList,adapter,getContext());
         locationAdapter.setSocketService(socketService);
 
+        RecyclerView locateRecycler =   root.findViewById(R.id.recycler_view_locate);
+        RecyclerView roomRecycler =   root.findViewById(R.id.recycler_view);
+
         // 매칭 시작 버튼 클릭 시
         startMatchingButton.setOnClickListener(v -> {
             socketService.startSocketConnection();
             startMatchingButton.setVisibility(View.GONE);
             stopMatchingButton.setVisibility(View.VISIBLE);
             findLocationButton.setVisibility(View.GONE);
+            locateRecycler.setVisibility(View.GONE);
+            roomRecycler.setVisibility(View.VISIBLE);
             targetLocation.setEnabled(false);
         });
 
@@ -79,6 +84,8 @@ public class MatchingFragment extends Fragment {
             startMatchingButton.setVisibility(View.VISIBLE);
             stopMatchingButton.setVisibility(View.GONE);
             findLocationButton.setVisibility(View.VISIBLE);
+            locateRecycler.setVisibility(View.VISIBLE);
+            roomRecycler.setVisibility(View.GONE);
             targetLocation.setEnabled(true);
         });
 

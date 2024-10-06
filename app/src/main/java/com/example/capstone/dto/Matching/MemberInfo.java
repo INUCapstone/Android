@@ -1,7 +1,9 @@
 package com.example.capstone.dto.Matching;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 public class MemberInfo {
 
@@ -15,5 +17,9 @@ public class MemberInfo {
         this.isReady=isReady;
         this.memberId=memberId;
         this.nickname=nickname;
+    }
+
+    public MemberInfo(){
+
     }
 }
