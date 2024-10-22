@@ -73,13 +73,14 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // pub으로 레디 요청 전송
+                // pub으로 레디 요청 전송하는 메소드 호출 (SocketService)
             }
         });
         holder.showPathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("버튼","버튼 클릭됨");
+                // 지도 표시하는 로직 구현
             }
         });
     }

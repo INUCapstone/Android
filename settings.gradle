@@ -20,6 +20,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()  // Maven Central 추가
         maven { url "https://jitpack.io" }  // JitPack 저장소 추가
+        maven {
+            url 'https://repository.map.naver.com/archive/maven'
+        }
     }
 }
 

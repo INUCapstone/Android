@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 import com.example.capstone.R;
 import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.Matching.DetailInfo;
+import com.example.capstone.dto.Matching.MemberInfo;
+import com.example.capstone.dto.Matching.PathInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
 import com.example.capstone.dto.Matching.WaitingMemberReqDto;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,35 +79,11 @@ public class SocketService {
                 .endY(endY)
                 .build();
 
-        /*
-        TaxiRoomRes roomRes = TaxiRoomRes.builder()
-                .roomId(1L)
-                .currentMemberCnt(3L)
-                .pathInfoList(List.of(new PathInfo((long) 127.10991634747967, (long) 37.39447145478345),
-                        new PathInfo((long) 127.10966790676201, (long) 37.394469584427156),
-                        new PathInfo((long) 127.10967141980313, (long) 37.39512739646385),
-                        new PathInfo((long) 127.10968100356395, (long) 37.396226781360426),
-                        new PathInfo((long) 127.10967417816033, (long) 37.39775855885587),
-                        new PathInfo((long) 127.10967417816033, (long) 37.39775855885587)))
-                .time(1000L)
-                .charge(10000L)
-                .memberList(List.of(new MemberInfo("Templar","1", false),
-                        new MemberInfo("Knight","2", false),
-                        new MemberInfo("Templar","1", true)))
-
-                .isDelete(false)
-                .isStart(false)
-                .build();
-
-        changeRoomList(roomRes);
-        adapter.notifyDataSetChanged();
-        */
 
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
 
         // 헤더에 토큰 추가
         List<StompHeader> headers = new ArrayList<>();
-        Log.d("토큰",tokenManager.getAccessToken());
         headers.add(new StompHeader("Authorization", tokenManager.getAccessToken()));
 
         // STOMP 연결 시도
@@ -113,7 +91,6 @@ public class SocketService {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
                     isRunning = true;
-                    Log.d("연결시도","===========================================");
                     subscribeToRoomUpdates(); // 방 정보 업데이트 구독
                     break;
                 case ERROR:
@@ -139,13 +116,12 @@ public class SocketService {
 
     // 메시지 수신을 대기하고 UI를 업데이트하는 메소드
     private void subscribeToRoomUpdates() {
-        Log.d("시발","시발시발시발시발시발시발");
-        topicDisposable = stompClient.topic("/sub/member/"+1L)
+
+        topicDisposable = stompClient.topic("/sub/member/"+ tokenManager.getMemberId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
-                    Log.d("혹시","여기?");
+
                     String finalMessage = topicMessage.getPayload();
-                    Log.d("방",finalMessage);
                     uiHandler.post(() -> {
                         // JSON 문자열을 TaxiRoomRes 객체로 파싱
                         Gson gson = new Gson();
@@ -178,6 +154,8 @@ public class SocketService {
     private void changeRoomList(TaxiRoomRes roomData) {
         boolean isNew = true;
         int index = 0;
+
+        // 방 리스트에 존재하는 방인지 확인
         for (TaxiRoomRes room : roomList) {
             if (room.getRoomId() == roomData.getRoomId()) {
                 isNew = false;
@@ -194,12 +172,15 @@ public class SocketService {
         else if (roomData.isDelete()) {
             roomList.remove(index);
         }
-        // 방의 모든 인원이 레디하여 출발한 경우, 소켓연결을 끊고 기사정보를 받아오는 요청을 보낸다.
+        // 방의 모든 인원이 레디하여 출발한 경우, 매칭구독 끊고 기사구독을 연결
         else if (roomData.isStart()) {
-            roomList.remove(index);
-            stopSocketConnection();
+            // 매칭 구독 끊기
 
-            // 기사정보 가져오는 로직
+            // 매칭페이지에 매칭된 방 정보를 보여주기
+
+            // 기사정보 페이지로 이동
+
+            // 기사구독 연결(기사정보를 받아오면 기사정보 보여주고 소켓연결 끊기)
 
         }
         // 방이 변경됐으면(ex.누가 레디를 하거나 푼 경우), 해당 방의 정보를 변경해준다.

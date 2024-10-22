@@ -15,16 +15,19 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     allprojects {
         repositories {
             google()
             mavenCentral()
-            maven {url "https://jitpack.io"}
             maven {
                 url 'https://repository.map.naver.com/archive/maven'
             }
+            maven {url "https://jitpack.io"}
         }
     }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -74,5 +77,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     implementation 'com.auth0.android:jwtdecode:2.0.0'
-
+    implementation 'com.naver.maps:map-sdk:3.19.1'
 }
