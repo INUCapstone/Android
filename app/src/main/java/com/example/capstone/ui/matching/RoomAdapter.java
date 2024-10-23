@@ -1,5 +1,6 @@
 package com.example.capstone.ui.matching;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -16,17 +17,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
+import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.Matching.MemberInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
 
 import java.util.List;
 
+import ua.naiksoftware.stomp.StompClient;
+
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
     private final List<TaxiRoomRes> roomList;
+    private StompClient stompClient;
+    private TokenManager tokenManager;
 
-    public RoomAdapter(List<TaxiRoomRes> roomList) {
+    public RoomAdapter(List<TaxiRoomRes> roomList, StompClient stompClient, Context context) {
         this.roomList = roomList;
+        this.stompClient = stompClient;
+        this.tokenManager = new TokenManager(context);
     }
 
     @NonNull
@@ -73,9 +81,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // pub으로 레디 요청 전송하는 메소드 호출 (SocketService)
+                stompClient.send("/pub/ready/"+roomData.getRoomId()+"/"+tokenManager.getMemberId(), null)
+                        .subscribe(() -> Log.d("매칭 요청", "매칭 시작 요청을 보냈습니다."),
+                                throwable -> Log.d("매칭 요청 실패", throwable.getMessage()));
             }
         });
+
         holder.showPathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+
 public class MatchingFragment extends Fragment {
 
     private FragmentMatchingBinding binding;
@@ -33,9 +38,10 @@ public class MatchingFragment extends Fragment {
     private List<DetailInfo> locationInfoList;
     private RoomAdapter adapter;
     private LocationAdapter locationAdapter;
-    private Button startMatchingButton, stopMatchingButton, findLocationButton;
+    private Button startMatchingButton, stopMatchingButton, findLocationButton,taxiOutButton;
     private EditText targetLocation;
-    private String data;
+    private TextView logoMatchingSuccess;
+    private StompClient stompClient;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,13 +50,15 @@ public class MatchingFragment extends Fragment {
 
         targetLocation = root.findViewById(R.id.targetLocation);
 
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
+
         roomList = new ArrayList<>();
-        adapter = new RoomAdapter(roomList);
+        adapter = new RoomAdapter(roomList,stompClient, getContext());
         locationInfoList = new ArrayList<>();
         locationAdapter = new LocationAdapter(locationInfoList);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
 
         RecyclerView locationRecyclerView = root.findViewById(R.id.recycler_view_locate);
@@ -60,12 +68,25 @@ public class MatchingFragment extends Fragment {
         startMatchingButton = root.findViewById(R.id.startMatchingButton);
         stopMatchingButton = root.findViewById(R.id.stopMatchingButton);
         findLocationButton = root.findViewById(R.id.findLocationButton);
+        taxiOutButton = root.findViewById(R.id.taxiOutButton);
+        logoMatchingSuccess = root.findViewById(R.id.logoMatchingSuccess);
 
-        socketService = new SocketService(roomList,adapter,getContext());
+        socketService = new SocketService(roomList,adapter,getContext(),stompClient);
         locationAdapter.setSocketService(socketService);
 
         RecyclerView locateRecycler =   root.findViewById(R.id.recycler_view_locate);
         RecyclerView roomRecycler =   root.findViewById(R.id.recycler_view);
+
+        taxiOutButton.setOnClickListener(v -> {
+            startMatchingButton.setVisibility(View.VISIBLE);
+            stopMatchingButton.setVisibility(View.GONE);
+            findLocationButton.setVisibility(View.VISIBLE);
+            locateRecycler.setVisibility(View.VISIBLE);
+            roomRecycler.setVisibility(View.GONE);
+            targetLocation.setEnabled(true);
+            taxiOutButton.setVisibility(View.GONE);
+            logoMatchingSuccess.setVisibility(View.GONE);
+        });
 
         // 매칭 시작 버튼 클릭 시
         startMatchingButton.setOnClickListener(v -> {

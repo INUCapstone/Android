@@ -6,15 +6,15 @@
     android:padding="2dp">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="180dp"
         android:id="@+id/item_taxi_room"
-        android:layout_height="wrap_content"
+        android:layout_height="105dp"
         android:layout_marginTop="1dp"
         android:orientation="horizontal"
         android:background="@drawable/recycle_border">
 
         <LinearLayout
-            android:layout_width="200dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
@@ -25,46 +25,47 @@
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
                 android:text="예상시간 : 0분"
-                android:textSize="20sp"/>
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/charge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:text="예상금액 : 0원"
-                android:textSize="20sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/currentMemberCnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:text="정원 : 1/4"
-                android:textSize="15sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/memberList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="김땡떙,박땡땡,이땡땡,조땡땡"
-                android:textSize="15sp" />
+                android:layout_marginTop="2dp"
+                android:text="Templar,Templar,Templar,조땡땡"
+                android:textSize="10sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical">
 
             <android.widget.ImageButton
                 android:id="@+id/showPathButton"
-                android:layout_width="80dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 android:layout_marginTop="15dp"
                 android:background="@color/white"
                 android:src="@drawable/path"
@@ -73,13 +74,14 @@
 
             <android.widget.Button
                 android:id="@+id/readyButton"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_width="35dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/button_background"
                 android:text="준 비"
                 android:textColor="@color/green"
-                android:textSize="20sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

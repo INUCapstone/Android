@@ -5,5 +5,5 @@
     <stroke
         android:width="2dp"
         android:color="@color/green"/> <!-- 테두리 색상 -->
-    <corners android:radius="16dp"/>
+    <corners android:radius="8dp"/>
 </shape>

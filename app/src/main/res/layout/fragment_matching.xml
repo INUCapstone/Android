@@ -7,7 +7,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -40,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
-                    android:text="인천대학교"
+                    android:text="현대프리미엄아웃렛 송도점"
                     android:textColor="@color/green"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -56,13 +60,24 @@
             android:orientation="vertical"
             android:layout_marginTop="10dp">
 
+            <TextView
+                android:id="@+id/logoMatchingSuccess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="방 매칭 성공"
+                android:textColor="@color/green"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:visibility = "gone"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_locate"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
                 android:layout_marginBottom="24dp"
-                android:layout_marginTop="12dp"
-                android:padding="24dp"
+                android:layout_marginTop="6dp"
+                android:padding="5dp"
                 android:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -70,8 +85,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
                 android:layout_marginBottom="24dp"
-                android:layout_marginTop="12dp"
-                android:padding="24dp"
+                android:layout_marginTop="6dp"
+                android:padding="5dp"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -107,6 +122,18 @@
                 android:textSize="25sp"
                 android:layout_marginEnd="100dp"
                 android:layout_marginStart="100dp"
+                android:visibility="gone" />
+
+            <android.widget.Button
+                android:id="@+id/taxiOutButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/green"
+                android:text="택시 하차"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:layout_marginStart="25dp"
                 android:visibility="gone" />
 
             <android.widget.Button

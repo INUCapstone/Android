@@ -28,12 +28,10 @@ public class TaxiRoomRes{
     // 참여자 닉네임 리스트
     private List<MemberInfo> memberList;
 
-    private boolean isDelete;
-
     private boolean isStart;
 
     public TaxiRoomRes(Long roomId, Long currentMemberCnt, List<PathInfo> pathInfoList, Long time, Long charge,
-                       List<MemberInfo> memberList, boolean isDelete, boolean isStart){
+                       List<MemberInfo> memberList, boolean isStart){
         this.charge=charge;
         this.roomId =roomId;
         this.memberList=memberList;
@@ -41,7 +39,6 @@ public class TaxiRoomRes{
         this.currentMemberCnt=currentMemberCnt;
         this.time=time;
         this.isStart= isStart;
-        this.isDelete=isDelete;
     }
 
     public TaxiRoomRes(){

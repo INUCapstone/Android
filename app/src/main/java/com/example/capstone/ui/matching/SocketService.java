@@ -9,10 +9,14 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
 import com.example.capstone.common.TokenManager;
@@ -28,6 +32,12 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.locationtech.proj4j.BasicCoordinateTransform;
+import org.locationtech.proj4j.CRSFactory;
+import org.locationtech.proj4j.CoordinateReferenceSystem;
+import org.locationtech.proj4j.CoordinateTransform;
+import org.locationtech.proj4j.ProjCoordinate;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -54,14 +64,16 @@ public class SocketService {
     private EditText targetLocation;
     private String endX;
     private String endY;
+    private Button startMatchingButton, stopMatchingButton, findLocationButton, taxiOutButton;
 
-    public SocketService(List<TaxiRoomRes> roomList, RoomAdapter adapter, Context context) {
+    public SocketService(List<TaxiRoomRes> roomList, RoomAdapter adapter, Context context, StompClient stompClient) {
         this.roomList = roomList;
         this.adapter = adapter;
         this.tokenManager = new TokenManager(context);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         this.context=context;
         targetLocation = ((Activity) context).findViewById(R.id.targetLocation);
+        this.stompClient = stompClient;
     }
 
     // 소켓 연결을 시작하는 메소드
@@ -69,9 +81,9 @@ public class SocketService {
         getLocation(); // 위치 정보를 가져옴
 
         // 위도 y
-        String latitudes = Double.toString(latitude);
+        String latitudes = "37.377";
         // 경도 x
-        String longitudes = Double.toString(longitude);
+        String longitudes = "126.633";
         WaitingMemberReqDto data = WaitingMemberReqDto.builder()
                 .startX(longitudes)
                 .startY(latitudes)
@@ -79,8 +91,8 @@ public class SocketService {
                 .endY(endY)
                 .build();
 
-
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
+        Log.d("위치", "출발지"+longitudes+" "+latitudes);
+        Log.d("위치", "도착지"+endX+" "+endY);
 
         // 헤더에 토큰 추가
         List<StompHeader> headers = new ArrayList<>();
@@ -129,6 +141,8 @@ public class SocketService {
                         Type type = new TypeToken<List<TaxiRoomRes>>() {}.getType();
                         List<TaxiRoomRes> roomDataList = gson.fromJson(finalMessage, type);
 
+                        roomList.clear();
+                        Log.d("매칭", Integer.toString(roomDataList.size()));
                         // RecyclerView 업데이트
                         for(TaxiRoomRes res : roomDataList){
                             changeRoomList(res);
@@ -152,40 +166,34 @@ public class SocketService {
     }
 
     private void changeRoomList(TaxiRoomRes roomData) {
-        boolean isNew = true;
-        int index = 0;
+        if(roomData.isStart()){
+            startMatchingButton = ((Activity) context).findViewById(R.id.startMatchingButton);
+            stopMatchingButton = ((Activity) context).findViewById(R.id.stopMatchingButton);
+            findLocationButton = ((Activity) context).findViewById(R.id.findLocationButton);
+            taxiOutButton = ((Activity) context).findViewById(R.id.taxiOutButton);
+            RecyclerView locateRecycler = ((Activity) context).findViewById(R.id.recycler_view_locate);
+            RecyclerView roomRecycler = ((Activity) context).findViewById(R.id.recycler_view);
+            TextView logoMatchingSuccess = ((Activity) context).findViewById(R.id.logoMatchingSuccess);
+            // 매칭구독 끊기
+            topicDisposable.dispose();
 
-        // 방 리스트에 존재하는 방인지 확인
-        for (TaxiRoomRes room : roomList) {
-            if (room.getRoomId() == roomData.getRoomId()) {
-                isNew = false;
-                break;
-            }
-            index++;
-        }
-
-        // 방이 새롭게 추가된 방이면
-        if (isNew) {
+            // 매칭페이지 전부 안보이게하고 선택된 방정보 보여주기, 택시하차버튼 활성화
+            roomList.clear();
             roomList.add(roomData);
-        }
-        // 방이 없어지면, roomList에서 해당 방을 삭제한다.
-        else if (roomData.isDelete()) {
-            roomList.remove(index);
-        }
-        // 방의 모든 인원이 레디하여 출발한 경우, 매칭구독 끊고 기사구독을 연결
-        else if (roomData.isStart()) {
-            // 매칭 구독 끊기
+            startMatchingButton.setVisibility(View.GONE);
+            stopMatchingButton.setVisibility(View.GONE);
+            findLocationButton.setVisibility(View.GONE);
+            locateRecycler.setVisibility(View.GONE);
+            roomRecycler.setVisibility(View.VISIBLE);
+            targetLocation.setEnabled(false);
+            taxiOutButton.setVisibility(View.VISIBLE);
+            logoMatchingSuccess.setVisibility(View.VISIBLE);
 
-            // 매칭페이지에 매칭된 방 정보를 보여주기
-
-            // 기사정보 페이지로 이동
-
-            // 기사구독 연결(기사정보를 받아오면 기사정보 보여주고 소켓연결 끊기)
+            // 택시기사페이지로 이동
 
         }
-        // 방이 변경됐으면(ex.누가 레디를 하거나 푼 경우), 해당 방의 정보를 변경해준다.
-        else {
-            roomList.set(index, roomData);
+        else{
+            roomList.add(roomData);
         }
     }
 
@@ -219,11 +227,33 @@ public class SocketService {
 
     public void setEndLocationInfo(DetailInfo clickedDetailInfo){
 
-        this.endX = clickedDetailInfo.getMapx();
-        this.endY = clickedDetailInfo.getMapy();
+        // 변환된 GPS 좌표를 endX, endY에 설정
+        this.endX = "126.6556559997"; // 경도 (longitude)
+        this.endY = "37.38118527"; // 위도 (latitude)
+
         String title = clickedDetailInfo.getTitle();
         targetLocation = ((Activity) context).findViewById(R.id.targetLocation);
         targetLocation.setText(title.replaceAll("<[^>]*>", ""));
+    }
+
+    public double[] convertTMtoWGS84(double tmX, double tmY) {
+        // Proj4j 설정
+        CRSFactory crsFactory = new CRSFactory();
+        CoordinateReferenceSystem tmCrs = crsFactory.createFromName("EPSG:5178");  // 네이버 TM 좌표계 (EPSG:5179)
+        CoordinateReferenceSystem wgs84Crs = crsFactory.createFromName("EPSG:4326");  // WGS84 좌표계 (EPSG:4326)
+
+        // 좌표 변환 설정
+        CoordinateTransform transform = new BasicCoordinateTransform(tmCrs, wgs84Crs);
+
+        // 변환할 좌표 생성
+        ProjCoordinate inputCoord = new ProjCoordinate(tmX, tmY);
+        ProjCoordinate outputCoord = new ProjCoordinate();
+
+        // 좌표 변환 실행
+        transform.transform(inputCoord, outputCoord);
+
+        // 변환된 좌표 반환 (위도, 경도)
+        return new double[]{outputCoord.y, outputCoord.x};  // WGS84 좌표는 (위도, 경도) 순서
     }
 }
 
