@@ -1,6 +1,6 @@
 package com.example.capstone.ui.matching;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +15,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
+import com.example.capstone.activity.MapFragmentActivity;
 import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.service.NaverService;
 import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.databinding.FragmentMatchingBinding;
 import com.example.capstone.dto.Matching.DetailInfo;
 import com.example.capstone.dto.Matching.MemberInfo;
+import com.example.capstone.dto.Matching.PathInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
-import com.example.capstone.ui.driver.DriverFragment;
 import com.example.capstone.ui.driver.SharedViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +57,38 @@ public class MatchingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMatchingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
         locateRecycler =   root.findViewById(R.id.recycler_view_locate);
         roomRecycler =   root.findViewById(R.id.recycler_view);
 
+        targetLocation = root.findViewById(R.id.targetLocation);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
+
         SharedMatchingModel viewModel = new ViewModelProvider(requireActivity()).get(SharedMatchingModel.class);
+
+        locationInfoList = new ArrayList<>();
+        locationAdapter = new LocationAdapter(locationInfoList);
+
+        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setAdapter(adapter);
+
+        RecyclerView locationRecyclerView = root.findViewById(R.id.recycler_view_locate);
+        locationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        locationRecyclerView.setAdapter(locationAdapter);
+
+        startMatchingButton = root.findViewById(R.id.startMatchingButton);
+        stopMatchingButton = root.findViewById(R.id.stopMatchingButton);
+        findLocationButton = root.findViewById(R.id.findLocationButton);
+        taxiOutButton = root.findViewById(R.id.taxiOutButton);
+        logoMatchingSuccess = root.findViewById(R.id.logoMatchingSuccess);
+
+        roomList = new ArrayList<>();
+        adapter = RoomAdapterSingleton.getInstance(roomList,stompClient, getContext());
+        socketService = SocketSingleton.getInstance(roomList,adapter,getContext(),stompClient);
+        locationAdapter.setSocketService(socketService);
+
+        // 방 매칭 성공인 경우
         viewModel.getRoomInfo().observe(getViewLifecycleOwner(),  roomData-> {
             if (roomData != null) {
                 startMatchingButton = root.findViewById(R.id.startMatchingButton);
@@ -106,36 +135,28 @@ public class MatchingFragment extends Fragment {
                 pathButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), MapFragmentActivity.class);
+                        List<PathInfo> pathInfos = roomData.getPathInfoList();
+                        Gson gson = new Gson();
+                        intent.putExtra("pathInfo", gson.toJson(pathInfos));
 
+                        startActivity(intent);
                     }
                 });
             }
         });
 
-        targetLocation = root.findViewById(R.id.targetLocation);
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://3.37.76.51:80/ws");
-
-        roomList = new ArrayList<>();
-        adapter = new RoomAdapter(roomList,stompClient, getContext());
-        locationInfoList = new ArrayList<>();
-        locationAdapter = new LocationAdapter(locationInfoList);
-
-        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        recyclerView.setAdapter(adapter);
-
-        RecyclerView locationRecyclerView = root.findViewById(R.id.recycler_view_locate);
-        locationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        locationRecyclerView.setAdapter(locationAdapter);
-
-        startMatchingButton = root.findViewById(R.id.startMatchingButton);
-        stopMatchingButton = root.findViewById(R.id.stopMatchingButton);
-        findLocationButton = root.findViewById(R.id.findLocationButton);
-        taxiOutButton = root.findViewById(R.id.taxiOutButton);
-        logoMatchingSuccess = root.findViewById(R.id.logoMatchingSuccess);
-
-        socketService = new SocketService(roomList,adapter,getContext(),stompClient);
-        locationAdapter.setSocketService(socketService);
+        // 방 매칭중인 경우
+        viewModel.getIsMatching().observe(getViewLifecycleOwner(), isMatching -> {
+            if(isMatching != null && isMatching){
+                startMatchingButton.setVisibility(View.GONE);
+                stopMatchingButton.setVisibility(View.VISIBLE);
+                findLocationButton.setVisibility(View.GONE);
+                locateRecycler.setVisibility(View.GONE);
+                roomRecycler.setVisibility(View.VISIBLE);
+                targetLocation.setEnabled(false);
+            }
+        });
 
         // 택시하차버튼 클릭 시
         taxiOutButton.setOnClickListener(v -> {
@@ -153,10 +174,11 @@ public class MatchingFragment extends Fragment {
             taxiOutButton.setVisibility(View.GONE);
             logoMatchingSuccess.setVisibility(View.GONE);
             SharedViewModel driverModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-            SharedMatchingModel roomModel = new ViewModelProvider(requireActivity()).get(SharedMatchingModel.class);
             driverModel.reSet();
-            roomModel.reSet();
-            viewModel.reSetStatus();
+            viewModel.setNoMatching();
+            viewModel.reSetRoomInfo();
+            viewModel.reSetRoomList();
+
         });
 
         // 매칭 시작 버튼 클릭 시
@@ -168,11 +190,14 @@ public class MatchingFragment extends Fragment {
             locateRecycler.setVisibility(View.GONE);
             roomRecycler.setVisibility(View.VISIBLE);
             targetLocation.setEnabled(false);
-            viewModel.setStatus(1);
+            viewModel.setMatching();
+            viewModel.reSetRoomInfo();
+            viewModel.reSetRoomList();
         });
 
         // 매칭 종료 버튼 클릭 시
         stopMatchingButton.setOnClickListener(v -> {
+
             socketService.stopSocketConnection();
             startMatchingButton.setVisibility(View.VISIBLE);
             stopMatchingButton.setVisibility(View.GONE);
@@ -180,7 +205,9 @@ public class MatchingFragment extends Fragment {
             locateRecycler.setVisibility(View.VISIBLE);
             roomRecycler.setVisibility(View.GONE);
             targetLocation.setEnabled(true);
-            viewModel.reSetStatus();
+            viewModel.setNoMatching();
+            viewModel.reSetRoomList();
+            viewModel.reSetRoomInfo();
         });
 
         // 도착지 검색 버튼 클릭 시
@@ -207,7 +234,4 @@ public class MatchingFragment extends Fragment {
         binding = null;
     }
 
-    public void clickLocation(){
-
-    }
 }

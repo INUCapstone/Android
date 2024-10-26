@@ -1,8 +1,6 @@
 package com.example.capstone.activity;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,8 +17,6 @@ import com.example.capstone.api.RepositoryCallback;
 import com.example.capstone.api.service.MemberService;
 import com.example.capstone.common.ExceptionCode;
 import com.example.capstone.databinding.ActivityMainBinding;
-import com.example.capstone.dto.Matching.TaxiRoomRes;
-import com.example.capstone.ui.matching.SocketService;
 
 import java.util.Map;
 
@@ -31,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean hasRequestedDriver = false;
     private boolean hasRequestedCharge = false;
     private boolean hasRequestedMatching = false;
-    private Button startMatchingButton, stopMatchingButton, findLocationButton, taxiOutButton;
-    private EditText targetLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,4 +124,5 @@ public class MainActivity extends AppCompatActivity {
         hasRequestedMy = false;
         hasRequestedCharge = false;
     }
+
 }

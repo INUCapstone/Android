@@ -1,6 +1,7 @@
 package com.example.capstone.ui.matching;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -17,9 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
+import com.example.capstone.activity.MapFragmentActivity;
 import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.Matching.MemberInfo;
+import com.example.capstone.dto.Matching.PathInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -30,11 +34,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private final List<TaxiRoomRes> roomList;
     private StompClient stompClient;
     private TokenManager tokenManager;
+    private Context context;
 
     public RoomAdapter(List<TaxiRoomRes> roomList, StompClient stompClient, Context context) {
         this.roomList = roomList;
         this.stompClient = stompClient;
         this.tokenManager = new TokenManager(context);
+        this.context=context;
     }
 
     @NonNull
@@ -90,8 +96,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.showPathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("버튼","버튼 클릭됨");
+                Intent intent = new Intent(context, MapFragmentActivity.class);
+                List<PathInfo> pathInfos = roomData.getPathInfoList();
+                Gson gson = new Gson();
+                intent.putExtra("pathInfo", gson.toJson(pathInfos));
 
+                context.startActivity(intent);
             }
         });
     }

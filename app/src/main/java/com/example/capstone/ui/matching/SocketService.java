@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -22,14 +21,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
+import com.example.capstone.activity.MapFragmentActivity;
 import com.example.capstone.common.TokenManager;
 import com.example.capstone.dto.DriverInfo;
 import com.example.capstone.dto.Matching.DetailInfo;
@@ -37,7 +34,6 @@ import com.example.capstone.dto.Matching.MemberInfo;
 import com.example.capstone.dto.Matching.PathInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
 import com.example.capstone.dto.Matching.WaitingMemberReqDto;
-import com.example.capstone.ui.driver.DriverFragment;
 import com.example.capstone.ui.driver.SharedViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -96,6 +92,27 @@ public class SocketService extends Service {
 
     // 소켓 연결을 시작하는 메소드
     public void startSocketConnection() {
+        /*
+        TaxiRoomRes roomRes = TaxiRoomRes.builder()
+                .roomId(1L)
+                .currentMemberCnt(3L)
+                .pathInfoList(List.of(new PathInfo( 127.10991634747967,  37.39447145478345),
+                        new PathInfo((double) 127.10966790676201, (double) 37.394469584427156),
+                        new PathInfo((double) 127.10967141980313, (double) 37.39512739646385),
+                        new PathInfo((double) 127.10968100356395, (double) 37.396226781360426),
+                        new PathInfo((double) 127.10967417816033, (double) 37.39775855885587),
+                        new PathInfo((double) 127.10967417816033, (double) 37.39775855885587)))
+                .time(1000L)
+                .charge(10000L)
+                .memberList(List.of(new MemberInfo("Templar","1", false),
+                        new MemberInfo("Knight","2", false),
+                        new MemberInfo("Templar","1", true)))
+                .isStart(false)
+                .build();
+
+        changeRoomList(roomRes);
+        adapter.notifyDataSetChanged();
+        */
 
         getLocation(); // 위치 정보를 가져옴
 
@@ -164,6 +181,7 @@ public class SocketService extends Service {
 
                         roomList.clear();
                         Log.d("매칭", Integer.toString(roomDataList.size()));
+
                         // RecyclerView 업데이트
                         for(TaxiRoomRes res : roomDataList){
                             changeRoomList(res);
@@ -183,13 +201,18 @@ public class SocketService extends Service {
                 topicDisposable.dispose();
             }
             isRunning = false;
+            roomList.clear();
+            adapter.notifyDataSetChanged();
         }
     }
 
     private void changeRoomList(TaxiRoomRes roomData) {
         if(roomData.isStart()){
-            SharedMatchingModel roomModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SharedMatchingModel.class);
+            SharedMatchingModel roomModel = new ViewModelProvider((ViewModelStoreOwner) context)
+                    .get(SharedMatchingModel.class);
+
             roomModel.setRoomInfo(roomData);
+            roomModel.setNoMatching();
 
             startMatchingButton = ((Activity) context).findViewById(R.id.startMatchingButton);
             stopMatchingButton = ((Activity) context).findViewById(R.id.stopMatchingButton);
@@ -239,7 +262,12 @@ public class SocketService extends Service {
             pathButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent = new Intent(context, MapFragmentActivity.class);
+                    List<PathInfo> pathInfos = roomData.getPathInfoList();
+                    Gson gson = new Gson();
+                    intent.putExtra("pathInfo", gson.toJson(pathInfos));
 
+                    context.startActivity(intent);
                 }
             });
 
@@ -250,19 +278,6 @@ public class SocketService extends Service {
                     .subscribe(() -> Log.d("기사 요청", "기사 요청을 보냈습니다."),
                             throwable -> Log.d("기사 요청 실패", throwable.getMessage()));
 
-            /*
-            DriverInfo driverInfo = DriverInfo.builder()
-                    .phoneNumber("1111")
-                    .pickupTime(10)
-                    .name("tester1")
-                    .carNumber("73루6299")
-                    .build();
-            SharedViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SharedViewModel.class);
-            viewModel.setDriverInfo(driverInfo);
-
-            // 소켓 끊기
-            stopSocketConnection();
-            */
 
         }
         else{

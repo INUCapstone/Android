@@ -4,35 +4,40 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.capstone.dto.DriverInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
+
+import java.util.List;
 
 public class SharedMatchingModel extends ViewModel {
 
     private MutableLiveData<TaxiRoomRes> roomInfo = new MutableLiveData<>();
-    private MutableLiveData<Integer> status = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isMatching = new MutableLiveData<>();
+    private MutableLiveData<List<TaxiRoomRes>> roomList = new MutableLiveData<>();
 
     public void setRoomInfo(TaxiRoomRes info) {
+        roomInfo = new MutableLiveData<>();
         roomInfo.setValue(info);
     }
-
+    public void reSetRoomInfo(){
+        roomInfo = new MutableLiveData<>();
+    }
     public LiveData<TaxiRoomRes> getRoomInfo() {
         return roomInfo;
     }
 
-    public void reSet(){
-        roomInfo = new MutableLiveData<>();
+
+    public void setMatching(){
+        isMatching.setValue(true);
+    }
+    public void setNoMatching(){
+        isMatching = new MutableLiveData<>();
+    }
+    public LiveData<Boolean> getIsMatching(){
+        return isMatching;
     }
 
-    public void setStatus(Integer tmp){
-        status.setValue(tmp);
-    }
 
-    public LiveData<Integer> getStatus(){
-        return status;
-    }
-
-    public void reSetStatus(){
-        roomInfo = new MutableLiveData<>();
+    public void reSetRoomList(){
+        roomList = new MutableLiveData<>();
     }
 }
