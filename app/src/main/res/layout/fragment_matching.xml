@@ -11,7 +11,6 @@
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -65,9 +64,93 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:layout_marginLeft="15dp"
                 android:text="방 매칭 성공"
                 android:textColor="@color/green"
                 android:textSize="25sp"
+                android:textStyle="bold"
+                android:visibility = "gone"/>
+
+            <LinearLayout
+                android:layout_width="350dp"
+                android:id="@+id/matchedRoomInfo"
+                android:layout_height="160dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:orientation="horizontal"
+                android:background="@drawable/recycle_border"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="1dp">
+
+                    <TextView
+                        android:id="@+id/matchedTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="예상시간 : 0분"
+                        android:textSize="20sp"/>
+
+                    <TextView
+                        android:id="@+id/matchedCharge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="예상금액 : 0원"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/matchedCurrentMemberCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="정원 : 1/4"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/matchedMemberList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Templar,Templar,Templar,조땡땡"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.widget.ImageButton
+                        android:id="@+id/showMatchedPathButton"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/white"
+                        android:src="@drawable/path"
+                        android:text="경 로"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/explaineLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="15dp"
+                android:text="배정된 기사정보는 기사페이지에서 확인해주세요."
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:visibility = "gone"/>
 
@@ -126,14 +209,14 @@
 
             <android.widget.Button
                 android:id="@+id/taxiOutButton"
-                android:layout_width="0dp"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/green"
-                android:text="택시 하차"
+                android:background="@color/red"
+                android:text="하차 완료"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:layout_marginStart="25dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginStart="90dp"
                 android:visibility="gone" />
 
             <android.widget.Button

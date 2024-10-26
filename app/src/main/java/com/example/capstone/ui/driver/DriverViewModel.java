@@ -16,4 +16,5 @@ public class DriverViewModel extends ViewModel {
     public LiveData<String> getText() {
         return mText;
     }
+
 }

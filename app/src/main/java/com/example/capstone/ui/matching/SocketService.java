@@ -4,27 +4,41 @@ import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstone.R;
 import com.example.capstone.common.TokenManager;
+import com.example.capstone.dto.DriverInfo;
 import com.example.capstone.dto.Matching.DetailInfo;
 import com.example.capstone.dto.Matching.MemberInfo;
 import com.example.capstone.dto.Matching.PathInfo;
 import com.example.capstone.dto.Matching.TaxiRoomRes;
 import com.example.capstone.dto.Matching.WaitingMemberReqDto;
+import com.example.capstone.ui.driver.DriverFragment;
+import com.example.capstone.ui.driver.SharedViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,11 +59,10 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
-public class SocketService {
+public class SocketService extends Service {
 
     private double latitude = 0.0, longitude = 0.0;
     private StompClient stompClient;
@@ -60,7 +73,7 @@ public class SocketService {
     private TokenManager tokenManager;
     private Disposable topicDisposable;
     private FusedLocationProviderClient fusedLocationClient;
-    private Context context;
+    private static Context context;
     private EditText targetLocation;
     private String endX;
     private String endY;
@@ -76,8 +89,14 @@ public class SocketService {
         this.stompClient = stompClient;
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
     // 소켓 연결을 시작하는 메소드
     public void startSocketConnection() {
+
         getLocation(); // 위치 정보를 가져옴
 
         // 위도 y
@@ -113,6 +132,8 @@ public class SocketService {
                     isRunning = false;
                     break;
             }
+
+
         });
 
         // STOMP 클라이언트 연결
@@ -167,6 +188,9 @@ public class SocketService {
 
     private void changeRoomList(TaxiRoomRes roomData) {
         if(roomData.isStart()){
+            SharedMatchingModel roomModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SharedMatchingModel.class);
+            roomModel.setRoomInfo(roomData);
+
             startMatchingButton = ((Activity) context).findViewById(R.id.startMatchingButton);
             stopMatchingButton = ((Activity) context).findViewById(R.id.stopMatchingButton);
             findLocationButton = ((Activity) context).findViewById(R.id.findLocationButton);
@@ -175,26 +199,102 @@ public class SocketService {
             RecyclerView roomRecycler = ((Activity) context).findViewById(R.id.recycler_view);
             TextView logoMatchingSuccess = ((Activity) context).findViewById(R.id.logoMatchingSuccess);
             // 매칭구독 끊기
-            topicDisposable.dispose();
+            if (topicDisposable != null) {
+                topicDisposable.dispose();
+            }
 
             // 매칭페이지 전부 안보이게하고 선택된 방정보 보여주기, 택시하차버튼 활성화
-            roomList.clear();
-            roomList.add(roomData);
+            //roomList.clear();
             startMatchingButton.setVisibility(View.GONE);
             stopMatchingButton.setVisibility(View.GONE);
             findLocationButton.setVisibility(View.GONE);
+            roomRecycler.setVisibility(View.GONE);
             locateRecycler.setVisibility(View.GONE);
-            roomRecycler.setVisibility(View.VISIBLE);
             targetLocation.setEnabled(false);
+
+            LinearLayout linearLayout = ((Activity) context).findViewById(R.id.matchedRoomInfo);
+            linearLayout.setVisibility(View.VISIBLE);
+            TextView explainLogo = ((Activity) context).findViewById(R.id.explaineLogo);
+            explainLogo.setVisibility(View.VISIBLE);
             taxiOutButton.setVisibility(View.VISIBLE);
             logoMatchingSuccess.setVisibility(View.VISIBLE);
 
-            // 택시기사페이지로 이동
+            // 방정보 갱신
+            TextView matchedTime = ((Activity) context).findViewById(R.id.matchedTime);
+            TextView matchedCharge = ((Activity) context).findViewById(R.id.matchedCharge);
+            TextView matchedCurrentMemberCnt = ((Activity) context).findViewById(R.id.matchedCurrentMemberCnt);
+            TextView matchedMemberList = ((Activity) context).findViewById(R.id.matchedMemberList);
+            ImageButton pathButton = ((Activity) context).findViewById(R.id.showMatchedPathButton);
+            matchedTime.setText("예상시간 : " + roomData.getTime() + "분");
+            matchedCharge.setText("예상금액 : " + roomData.getCharge() + "원");
+            matchedCurrentMemberCnt.setText("정원 : " + roomData.getCurrentMemberCnt() + "/4");
+
+            StringBuilder memberNames = new StringBuilder();
+            for (MemberInfo member : roomData.getMemberList()) {
+                if (memberNames.length() > 0) {
+                    memberNames.append(member.getNickname()).append(", ");
+                }
+            }
+            matchedMemberList.setText(memberNames.toString());
+            pathButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            // 택시기사 구독연결
+
+            subDriverInfo();
+            stompClient.send("/pub/depart/" + roomData.getRoomId(), null)
+                    .subscribe(() -> Log.d("기사 요청", "기사 요청을 보냈습니다."),
+                            throwable -> Log.d("기사 요청 실패", throwable.getMessage()));
+
+            /*
+            DriverInfo driverInfo = DriverInfo.builder()
+                    .phoneNumber("1111")
+                    .pickupTime(10)
+                    .name("tester1")
+                    .carNumber("73루6299")
+                    .build();
+            SharedViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SharedViewModel.class);
+            viewModel.setDriverInfo(driverInfo);
+
+            // 소켓 끊기
+            stopSocketConnection();
+            */
 
         }
         else{
             roomList.add(roomData);
         }
+    }
+
+    private void subDriverInfo(){
+        topicDisposable = stompClient.topic("/sub/taxi/"+ tokenManager.getMemberId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+
+                    String finalMessage = topicMessage.getPayload();
+                    uiHandler.post(() -> {
+                        // JSON 문자열을 TaxiRoomRes 객체로 파싱
+                        Gson gson = new Gson();
+
+                        DriverInfo driverInfo = gson.fromJson(finalMessage, DriverInfo.class);
+
+                        // ui갱신
+                        SharedViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SharedViewModel.class);
+                        viewModel.setDriverInfo(driverInfo);
+
+                        // 소켓 끊기
+                        if (driverInfo != null){
+                            stopSocketConnection();
+                        }
+
+                    });
+                }, throwable -> {
+                    throwable.printStackTrace();
+                });
     }
 
     private void getLocation() {

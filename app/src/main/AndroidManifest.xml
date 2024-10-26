@@ -24,7 +24,6 @@
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="18a5xgbv2d" />
-
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"

@@ -91,7 +91,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             @Override
             public void onClick(View view) {
                 Log.d("버튼","버튼 클릭됨");
-                // 지도 표시하는 로직 구현
+
             }
         });
     }
