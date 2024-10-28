@@ -19,8 +19,6 @@ public class DriverFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DriverViewModel driverViewModel =
-                new ViewModelProvider(this).get(DriverViewModel.class);
 
         binding = FragmentDriverBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

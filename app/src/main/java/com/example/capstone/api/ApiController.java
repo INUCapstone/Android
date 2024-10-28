@@ -12,6 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiController {
 
@@ -29,4 +30,10 @@ public interface ApiController {
 
     @PATCH("/members/point")
     Call<ResponseBody> chargePoint(@Header("Authorization") String token, @Body ChargePointReq chargePointReq);
+
+    @PATCH("/arrive/{driverId}")
+    Call<ResponseBody> sendDriverArrive(
+            @Header("Authorization") String token,
+            @Path("driverId") Long driverId
+    );;
 }

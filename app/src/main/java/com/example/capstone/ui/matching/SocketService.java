@@ -62,7 +62,7 @@ public class SocketService extends Service {
 
     private double latitude = 0.0, longitude = 0.0;
     private StompClient stompClient;
-    private boolean isRunning = false;
+    public boolean isRunning = false;
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
     private final List<TaxiRoomRes> roomList;
     private final RoomAdapter adapter;
@@ -92,28 +92,11 @@ public class SocketService extends Service {
 
     // 소켓 연결을 시작하는 메소드
     public void startSocketConnection() {
-        /*
-        TaxiRoomRes roomRes = TaxiRoomRes.builder()
-                .roomId(1L)
-                .currentMemberCnt(3L)
-                .pathInfoList(List.of(new PathInfo( 127.10991634747967,  37.39447145478345),
-                        new PathInfo((double) 127.10966790676201, (double) 37.394469584427156),
-                        new PathInfo((double) 127.10967141980313, (double) 37.39512739646385),
-                        new PathInfo((double) 127.10968100356395, (double) 37.396226781360426),
-                        new PathInfo((double) 127.10967417816033, (double) 37.39775855885587),
-                        new PathInfo((double) 127.10967417816033, (double) 37.39775855885587)))
-                .time(1000L)
-                .charge(10000L)
-                .memberList(List.of(new MemberInfo("Templar","1", false),
-                        new MemberInfo("Knight","2", false),
-                        new MemberInfo("Templar","1", true)))
-                .isStart(false)
-                .build();
-
-        changeRoomList(roomRes);
-        adapter.notifyDataSetChanged();
-        */
-
+        SharedMatchingModel viewModel = new ViewModelProvider((ViewModelStoreOwner) context)
+                .get(SharedMatchingModel.class);
+        viewModel.setMatching();
+        viewModel.reSetRoomInfo();
+        viewModel.reSetRoomList();
         getLocation(); // 위치 정보를 가져옴
 
         // 위도 y
@@ -193,17 +176,26 @@ public class SocketService extends Service {
                 });
     }
 
+    public void updateRoom(List<TaxiRoomRes> roomRes){
+        Log.d("updateRoom", "룸 업데이트");
+        uiHandler.post(() -> {
+            roomList.clear();
+            for(TaxiRoomRes info: roomRes){
+                changeRoomList(info);
+            }
+            adapter.notifyDataSetChanged();
+        });
+    }
+
     // 소켓 연결을 종료하는 메소드
     public void stopSocketConnection() {
-        if (isRunning) {
-            stompClient.disconnect();
-            if (topicDisposable != null) {
-                topicDisposable.dispose();
-            }
-            isRunning = false;
-            roomList.clear();
-            adapter.notifyDataSetChanged();
+        stompClient.disconnect();
+        if (topicDisposable != null) {
+            topicDisposable.dispose();
         }
+        isRunning = false;
+        //roomList.clear();
+        Log.d("소켓종료","=================================종료");
     }
 
     private void changeRoomList(TaxiRoomRes roomData) {
@@ -227,7 +219,7 @@ public class SocketService extends Service {
             }
 
             // 매칭페이지 전부 안보이게하고 선택된 방정보 보여주기, 택시하차버튼 활성화
-            //roomList.clear();
+            roomList.clear();
             startMatchingButton.setVisibility(View.GONE);
             stopMatchingButton.setVisibility(View.GONE);
             findLocationButton.setVisibility(View.GONE);
@@ -266,18 +258,19 @@ public class SocketService extends Service {
                     List<PathInfo> pathInfos = roomData.getPathInfoList();
                     Gson gson = new Gson();
                     intent.putExtra("pathInfo", gson.toJson(pathInfos));
-
+                    intent.putExtra("isMatching","false");
+                    intent.putExtra("isEndMatching","true");
+                    intent.putExtra("roomInfo", gson.toJson(roomData));
+                    Log.d("버튼 리스너 클릭됨", "12312312312342@@@");
                     context.startActivity(intent);
                 }
             });
 
             // 택시기사 구독연결
-
             subDriverInfo();
             stompClient.send("/pub/depart/" + roomData.getRoomId(), null)
                     .subscribe(() -> Log.d("기사 요청", "기사 요청을 보냈습니다."),
                             throwable -> Log.d("기사 요청 실패", throwable.getMessage()));
-
 
         }
         else{
@@ -303,6 +296,7 @@ public class SocketService extends Service {
 
                         // 소켓 끊기
                         if (driverInfo != null){
+                            isRunning = false;
                             stopSocketConnection();
                         }
 

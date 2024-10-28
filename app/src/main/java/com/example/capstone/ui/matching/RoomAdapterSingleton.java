@@ -13,9 +13,9 @@ public class RoomAdapterSingleton {
     private static RoomAdapter roomAdapter = null;
 
 
-    public static RoomAdapter getInstance(List<TaxiRoomRes> roomList, StompClient stompClient, Context context) {
+    public static RoomAdapter getInstance(List<TaxiRoomRes> roomResList,StompClient stompClient, Context context) {
         if (roomAdapter == null) {
-            roomAdapter = new RoomAdapter(roomList,stompClient, context);
+            roomAdapter = new RoomAdapter(roomResList,stompClient, context);
         }
         return roomAdapter;
     }

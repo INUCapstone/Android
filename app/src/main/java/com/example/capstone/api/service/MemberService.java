@@ -125,6 +125,28 @@ public class MemberService {
         });
     }
 
+    public void driverArrive(Long driverId, final RepositoryCallback callback) {
+        String token = tokenManager.getAccessToken();
+
+        apiController.sendDriverArrive(token,driverId).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    // 성공 시 콜백 호출
+                    callback.onSuccess("기사정보 수정 성공");
+                }
+                else{
+                    callback.onFailure(ExceptionCode.AUTH_FAIL,null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(ExceptionCode.NETWORK_ERROR, null);
+            }
+        });
+    }
+
     private void redirectToLogin() {
         // 현재 액티비티의 context를 사용하여 로그인 페이지로 이동
         Intent intent = new Intent(context, LoginActivity.class);

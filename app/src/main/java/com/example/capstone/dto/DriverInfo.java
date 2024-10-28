@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class DriverInfo {
 
+    private Long driverId;
     private String phoneNumber;
     private String carNumber;
     private String name;
@@ -18,8 +19,9 @@ public class DriverInfo {
 
     }
 
-    public DriverInfo(String phoneNumber, String carNumber, String name, Integer pickupTime){
+    public DriverInfo(Long driverId, String phoneNumber, String carNumber, String name, Integer pickupTime){
         this.carNumber = carNumber;
+        this.driverId=driverId;
         this.name= name;
         this.phoneNumber = phoneNumber;
         this.pickupTime=pickupTime;

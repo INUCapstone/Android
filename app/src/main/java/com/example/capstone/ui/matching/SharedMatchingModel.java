@@ -31,11 +31,12 @@ public class SharedMatchingModel extends ViewModel {
     }
     public void setNoMatching(){
         isMatching = new MutableLiveData<>();
+        isMatching.setValue(false);
     }
+
     public LiveData<Boolean> getIsMatching(){
         return isMatching;
     }
-
 
     public void reSetRoomList(){
         roomList = new MutableLiveData<>();

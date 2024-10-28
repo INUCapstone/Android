@@ -100,6 +100,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 List<PathInfo> pathInfos = roomData.getPathInfoList();
                 Gson gson = new Gson();
                 intent.putExtra("pathInfo", gson.toJson(pathInfos));
+                intent.putExtra("isMatching","true");
+                intent.putExtra("currentRoomInfo",gson.toJson(roomList));
 
                 context.startActivity(intent);
             }
@@ -126,5 +128,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             readyButton = itemView.findViewById(R.id.readyButton);
         }
     }
+
 }
 
